@@ -73,7 +73,7 @@ def axion_coupling_form(noise, rho, v, mass, Q, mag_moment, relaxation_time):
 	# if mass < precession_freq: print oscillation
 
 	coupling = 1.0
-	if mass < precession_freq: coupling = pow(10, 9)*noise/signal_e # in GeV (since noise is in eV)
+	if mass < precession_freq: coupling = pow(10, 9)*noise/signal_nucl # in GeV (since noise is in eV)
 
 	return coupling
 
@@ -100,7 +100,7 @@ def axion_coupling_form_polarization(noise, rho, v, mass, Q, z_pol, relaxation_t
 	signal_nucl = signal_e*(el_mag_moment/nucl_mag_moment)
 
 	coupling = 1.0
-	if mass < precession_freq: coupling = pow(10, 9)*noise/signal_nucl # noise should be dimensionless
+	if mass < precession_freq: coupling = pow(10, 9)*noise/signal_e # noise should be dimensionless
 
 	# if mass < pow(10, -2): coupling = pow(10, 9)*noise/signal_lowfreq # in GeV (since noise is in T)
 	# elif mass > pow(10, -2) and mass < precession_freq: coupling = pow(10, 9)*noise/signal_highfreq

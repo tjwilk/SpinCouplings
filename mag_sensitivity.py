@@ -69,6 +69,8 @@ def axion_coupling_form(noise, rho, v, mass, Q, mag_moment, relaxation_time, sho
 	signal = v*pow(2*rho*pow(10, 15)*pow(hbarc, 3.0), 0.5)*oscillation # in eV^2
 	# if mass < precession_freq: print oscillation
 
+	print "blah blah test blah"
+
 	coupling = 1.0
 	if mass < precession_freq: coupling = pow(10, 9)*noise/signal # in GeV (since noise is in eV)
 

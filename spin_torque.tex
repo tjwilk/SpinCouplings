@@ -1,0 +1,251 @@
+% \documentclass[12pt,letterpaper,openright]{article}
+% \documentclass[aps,prd,12pt,preprint]{article}
+% \documentclass[12pt,preprint]{article}
+\documentclass[aps,prd,final,letterpaper]{revtex4}
+
+\usepackage{amssymb,amsmath}
+\usepackage{fullpage}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage[margin=1.0in]{geometry}
+\usepackage{setspace}
+\usepackage{color}
+\usepackage{fancyhdr}
+\usepackage{collcell}
+\usepackage{datatool}
+\usepackage{environ}
+% \doublespacing
+% \onehalfspacing
+\renewcommand*{\familydefault}{\rmdefault}
+
+
+% \pagestyle{fancy}
+% \fancyhf{}
+% \renewcommand{\headrulewidth}{0pt}
+% \rhead{Wilkason \thepage}
+
+\newcommand{\ada}{\frac{\dot{\alpha}}{\alpha}}
+\newcommand{\mdm}{\frac{\dot{\mu}}{\mu}}
+\newcommand{\sech}{\mathop{\rm sech}\nolimits}
+\newcommand{\bra}[1]{\left\langle #1 \right|}
+\newcommand{\ket}[1]{\left|#1\right\rangle}
+\newcommand{\braket}[2]{\left\langle#1 |  #2\right\rangle}
+\newcommand{\rd}[1]{\mathop{\mathrm{d}#1}}
+% \newcommand{\sp}{$^1S_0 \rightarrow ^3P_0$}
+
+\definecolor{darkgreen}{rgb}{0,0.5,0}
+\newcommand{\tjw}[1]{\textbf{\textcolor{darkgreen}{(#1 -- tjw)}}}
+\newcommand{\coupling}{g_{a\bar{\psi}\psi}}
+
+% \pagenumbering{gobble}% Remove page numbers (and reset to 1)
+
+\begin{document}
+
+\title{Spin-Coupled Dark Matter}
+\author{TJ~Wilkason}
+% \affiliation{Stanford Physics Department}
+% \date{\today} 
+
+\begin{abstract}
+\noindent	
+
+\end{abstract}
+
+\maketitle
+
+\section{Dark Matter Coupling}
+
+An axion-like particle is created as the Goldstone boson of a high-scale Peccei-Quinn symmetry breaking, so like most Goldstone bosons, we expect to have a derivative interaction with fermions with the form:
+\begin{equation}
+\mathcal{L}_{ax} = \coupling \partial_{\mu} a\bar{\psi}\gamma^{\mu}\gamma^{5}\psi
+\end{equation}
+
+If the axion is ultralight (below $\sim 1$ eV), then we expect the coherent effect of all the axions to act as a classical field, with the particle oscillating around the minimum with a frequency equal to its mass. As a result, to understand the coherent effect, we want to analyze the non-relativistic limit of the above interaction, which gives the following Hamiltonian:
+\begin{equation}
+H_{ax} = -\coupling\vec{\nabla}a \cdot \vec{\sigma}_{\psi} \sim \coupling\left(\vec{v}\cdot \sigma_{\psi}\right)\;\partial_t \left(a_0 \cos{m_a t}\right) 
+\end{equation}
+\begin{equation}
+\Rightarrow H_{ax} \sim \coupling\sqrt{2\rho_{DM}}\vec{v} \cdot \vec{\sigma}_{\psi} \cos{m_a t}
+\end{equation}
+where $\psi$ is the field of any fermion (practically, either an electron or an atomic nucleus), and $\rho_{DM} = \frac{1}{2}m_{a}^2a^2$ is the density of dark matter in the galaxy (equal to $\rho_{DM} = 0.3 \frac{\mathrm{GeV}}{\mathrm{cm}^3}$). As a result, we see the gradient of the axion field creates an effective magnetic field that couples only to spin. This creates an effect similar to Larmor precession for which the CASPEr experiment was designed to measure. However, there are several other observable effects from this coupling that are outlined below.
+
+\subsection{Torque}
+
+This means that the axion creates a torque on each spin that takes the form 
+
+\begin{equation}
+\vec{\tau}_{\psi} = \coupling\sqrt{2\rho_{DM}}\vec{v} \times \vec{\sigma}_{\psi}
+\end{equation}
+
+As a result, if the axion field passes through an object made up of $N_p$ spins, there should be a total torque on that object equal to
+\begin{equation}
+\vec{\tau}_{\psi} = \coupling N_p\sqrt{2\rho_{DM}}\vec{v} \times \vec{\sigma}_{\psi} \sim \coupling\frac{1}{2}N_p v\sqrt{2\rho_{DM}} \hat{z}
+\label{signal}
+\end{equation}
+where we take a rough average over the geometry due to the unknown direction of the axion field with respect to the spin source. Since we will only measure the torque in a given direction, we will take it to be the $z$ direction.
+
+\subsection{Phase Shift}
+
+Like in Larmor precession, we expect that the magnetic field will change the time evolution of the spin due to the precession of the atoms around the axion field. As a result, there should be a spurious phase shift that is a function of the spin of the particle. This would create a differential phase shift between two particles with different spin values. After some interrogation time $T$, this phase shift will take the form:
+
+\begin{equation}
+\phi(T) = \int_0^T v\sqrt{\rho_{DM}}\cos{m_at}dt = \frac{v\sqrt{\rho_{DM}}}{m_a}\sin{m_a T}
+\end{equation}
+
+This phase shift can be measured using atom interferometry by interrogating two different atoms in different spin states ($m_{S, 1}$ and $m_{S, 2}$). This will create an interference pattern proportional to 
+
+\begin{equation}
+\Delta\phi = (m_{S, 1} - m_{S, 2})\frac{v\sqrt{\rho_{DN}}}{m_a}\sin{m_a T}
+\end{equation}
+
+For low frequencies, we will have $\sin{m_a T} \simeq m_a T$, so we expect that the phase shift will be roughly independent of frequency. For higher frequencies, the total phase shift will oscillate at the dark matter frequency. This will allow two different approaches for measuring this phase shift, one through a broadband measurement and the other through a resonant measurement. We will describe both experiments in the atom interferometry section below.
+
+\subsection{Force}
+
+By the same logic, we can find the force on a spin due to the dark matter wind by simply taking the gradient of the potential term:
+
+\begin{equation}
+\vec{F_a} = -\vec{\nabla}H = \coupling\vec{\nabla}\left(\vec{\nabla}a \cdot \sigma_{\psi}\right) \sim \coupling\vec{v}\left(\vec{v}\cdot \sigma_{\psi}\right)\; \partial^2_t \left(a_0 \cos{m_a t}\right) 
+\end{equation}
+\begin{equation}
+\Rightarrow \vec{F_a} \sim \coupling \vec{v}\left(\vec{v}\cdot\sigma_{\psi}\right)m_a\sqrt{2\rho_{DM}}\cos{m_a t}
+\end{equation}
+
+This force will create an acceleration on a particle of mass $m_{N}$. Theoretically, this acceleration could be observed through atom interferometry. However, in practice, we find that the effect is far too small to be effectively measured. As a result, we mention this effect simply for the sake of completeness.
+
+\section{Spin-Polarized Torsion Pendulum}
+
+\subsection{Experiment}
+
+The spin-polarized torsion pendulum at the University of Washington is an ideal candidate to look for the spin-coupled axion, as it's large spin moment helps to maximize the size of the signal, while minimizing the magnetic field backgrounds. The total number of spins as measured by the overall magnetization of the pendulum is $N_p \sim 10^{23}$. Since the polarized spins in the material are composed of electrons, this experiment is sensitive to the $g_{aee}$ coupling, which to the best of our knowledge has not been directly explored. 
+
+We propose a search for the spin-coupled axion by searching for this oscillating torque. Like in the EP-violation search, because the torque is oscillating, the signal will appear at 6 different frequencies corresponding to the combination of the turntable frequency $f_0$ and the dark matter frequency $f \sim m_a$. The size of this frequency signal will go like Equation \ref{signal}. As a result, we will want a broaband search over the dark matter frequency space to search for these particular frequencies. 
+
+The primary backgrounds to this signal include gravity gradients, magnetic field backgrounds and turntable tilt, all of which have been shown to be reducible down to below the fundamental noise limit. The noise limit from the experiment comes from two primary contributions: thermal noise from the fiber (which dominates at low dark matter frequencies) and angular readout noise from the laser readout system (which dominates at high frequencies). The noise power for each of these sources takes the form:
+
+\begin{equation}
+\mathcal{P}_{th} = \frac{48 T \kappa}{2\pi f Q}, \;\;\; \mathcal{P}_{\tau} = (2\pi)^4I^2\left((f^2 - f_0^2)^2 + \frac{f_0^4}{Q^2}\right)\mathcal{P}_{\theta}
+\end{equation}
+
+% \begin{equation}
+% \end{equation}
+
+In our sensitivity estimate, we calculate both noises sources for any given dark matter mass and take the larger of the two to be the limiting noise. To calculate the total noise after a set integration time ($t = 10^8$ s $\sim 3$ years), we need to know how the power scales with time. For times less than the coherence time of the dark matter $\tau \sim \frac{10^6}{m_a}$, the noise decreases with the square root of the total integration time, while after the coherence time, the noise decreases with the quarter root of the total integration time. Thus, for a broadband experiment, we expect that the transition point at which the scaling will change will be $m_a \sim \frac{2\pi Q}{10^8}$Hz $\sim 10^{-17}$ eV.
+
+\begin{equation}
+N = \sqrt{P_{\tau}}
+\begin{cases} 
+      \frac{1}{\sqrt{t}} & t < \tau \\
+      \frac{1}{(t\tau)^{1/4}} & t \geq  \tau\\
+\end{cases}
+\end{equation}
+
+\subsection{Sensitivity Estimate}
+
+To estimate the sensitivity, we analyze these noise sources for the current experimental parameters (Run 1), near-term improved parameters (Run 2), and optimistic future parameters (Run 3). These parameters are described in Table \ref{parameter_table}. 
+
+\begin{table}
+\begin{center}
+ \begin{tabular}{|c || c | c | c | c |} 
+ \hline
+  & Run 1 & Run 2 & Run 3 & Run 3 (Constant R)\\
+ \hline\hline
+ $T$ (K) & 300 & 300 & 6 & 6 \\ 
+ \hline
+ % $\kappa$ (erg/rad) & 0.025 & 0.025 & 1640 \\
+ $\kappa$ (erg/rad) & 0.185 & 0.185 & 1640 & 0.185 \\
+ \hline
+ $Q$ & 2000 & $10^6$ & $10^8$ & $10^8$\\
+ \hline
+ $\sqrt{\mathcal{P}_{\theta}}$ (rad/$\sqrt{\mathrm{Hz}}$) & $10^{-9}$ & $10^{-12}$ & $10^{-18}$ & $10^{-18}$\\ 
+ \hline
+ $f_0$ (Hz) & $5.379 \cdot 10^{-3}$ & $5.379 \cdot 10^{-3}$ & $100 \cdot 10^{-3}$ & $100 \cdot 10^{-3}$\\
+ \hline
+ % $I$ (g$\cdot$cm$^2$) & $107\cdot2^{2}$ & $107\cdot2^{2}$ & $20\cdot 10^{3} \cdot20^2$\\
+ $I$ (kg$\cdot$m$^2$) & $1.018 \cdot 10^{-4}$ & $1.018 \cdot 10^{-4}$ & $0.8$ & $ 1.018 \cdot 10^{-4}$\\
+ \hline
+ $N_p$ & $10^{23}$ & $10^{23}$ & $3\cdot10^{25}$ & $10^{23}$\\
+ \hline
+\end{tabular}
+\caption{Parameter estimates for various runs of the torsion pendulum.}
+\label{parameter_table}
+\end{center}
+\end{table}
+
+\begin{figure}
+\includegraphics[width = 0.75\textwidth]{torsion_pend_sens.pdf}
+\caption{Estimate of the sensitivity reach of the spin-polarized torsion pendulum for the $g_{aee}$ coupling.}
+\label{pend_sens_est}
+\end{figure}
+
+
+Combining the signal estimate with the background estimate above, we can solve for the sensitivity to the coupling by finding where $\frac{S}{N} \sim 1$. We plot this over a range of masses in Figure \ref{pend_sens_est} and compare it to the astrophysical bounds on the axion. We see that the experiment is particularly sensitive to low mass axions, reaching down to the astrophysical mass limit of $10^{-22}$ eV. This makes sense since in this region the noise is dominated by the thermal fiber noise, which is independent of frequency. We find that even with current experimental parameters, the experiment should be able to reduce the bounds on the coupling by roughly an order of magnitude, with significant further improvements gained with future parameters. 
+
+For higher masses, where the sensitivity becomes dominated by the readout noise, the noise scales with frequency like $\frac{1}{f^{2.25}}$ (from the combined effect of the time scaling with the readout noise), and so the experiment loses sensitivity to higher masses. However, the CASPEr experiment is sensitive to masses down to $m_a \sim 10^{-14}$ eV, so there is only a small amount of parameter space that is not covered (this space should be completely covered for Run 3 of the torsion pendulum).
+
+This spin-coupling is not unique to the axion, as it can arise from a hidden photon coupling $F^{'\mu\nu}\bar{\psi}\sigma_{\mu\nu}\psi \sim \vec{B'}\cdot\vec{\sigma}_{\psi}$. The hidden photon coupling will produce the same coupling as the axion, and so will have roughly the same sensitivity, albeit with different astrophysical bounds that still need to be calculated. 
+
+\section{Atom Interferometry}
+
+% \subsection{Signal}
+
+% For the atom interferometry experiment, we expect our signal to arise as a spurious phase shift due to the precession of the atoms around the axion field. This phase shift should take the form
+
+% \begin{equation}
+% \phi(t) = \int_0^t v\sqrt{\rho_{DM}}\cos{m_at'}dt' = \frac{v\sqrt{\rho_{DM}}}{m_a}\sin{m_a t}
+% \end{equation}
+
+% This is the phase shift due to the axion field after a given interrogation time $T$. 
+
+\subsection{Experiment}
+
+As described in the first section, we expect the axion dark matter to create a spurious phase shift on a spin due to the precession of the spin around the axion field. This phase shift can be measured using atom interferometry by interfering two atoms in different nuclear spin states, allowing us to probe the $g_{aNN}$ coupling. For this analysis, we will focus on an interferometer in development here at Stanford that is based on $^{87}$Sr, which has a a nuclear spin of $I = \frac{9}{2}$. This allows us to search for the difference between the spin states of $m_{I} = \pm \frac{9}{2}$, adding nearly an order of magnitude to the signal size. We also use an experiment with a total interrogation time of $T = 1.15 s$. 
+
+Since the signal size is a function of the interrogation time of the interferometer, the experimental results will be different for different dark matter mass ranges. For masses below the inverse free fall time, the atoms will have accumulated less then a full period of phase shift. For very small masses, only a very small amount of the sine curve will have accumulated, so we will have $\phi \simeq \frac{v\sqrt{\rho_{DM}}}{m_a}(m_aT) = v\sqrt{\rho_{DM}}T$. As a result, the phase shift should be independent of dark matter mass and should grow with larger interrogation times.
+
+For masses above the inverse free fall time, the sine curve will transition through multiple periods. As a result, the interferometer can be run in either a broadband mode or in a resonant mode. In a broadband experiment, the experiment is run for some set integration time, and the phase shift will thus be limited to lie in the range $\phi = \pm\frac{v\sqrt{\rho_{DM}}}{m_a}$, with the specific value depending on the exact value of the sine curve reached after some time $T$. As a result, the signal should fall off like $\frac{1}{m_a}$, with cusps located at $m_a T = n\pi$. In practice, these cusps can be avoided by running the interferometer with different interrogation times between runs.
+
+We can also convert this into a resonant experiment to take advantage of the multiple periods and allow the phase shift to accumulate. This is done by using a laser to transfer the atom population between the spin-up $m_I = +\frac{9}{2}$ and the spin-down state $m_I = -\frac{9}{2}$. As a result, if the frequency of the spin-flipping is equal to the dark matter mass, then we have effectively turned the $\sin{m_a t}$ term into $|\sin{m_a t}|$, allowing the phase shift to build up over the coherence time of the dark matter. Experimentally, this spin-flipping can be accomplished in sub-millisecond time scales, allowing us to probe up to kHz ($\sim 10^{-13}$ eV) dark matter masses. 
+
+The integration time for the resonant experiment is set by the requirement that we want to probe a decade of dark matter masses in the same integration time as the broadband experiment ($10^7 s$). This will allow us to probe a few decades of dark matter masses in a reasonable amount of time. The time spent in each bin is thus $t_{\mathrm{bin}} = \frac{10^7 s}{N Q_\mathrm{eff}}$, where $N$ is the range of masses tranversed ($N = 10$ for a decade of masses) and $Q_{\mathrm{eff}}$ is the effective width of each bin. This is taken to be $Q_{\mathrm{eff}} = \mathrm{min}\left(10^6, \frac{m_a T}{\pi}\right)$. In practice, for the masses of interest, $\frac{m_a T}{\pi} < 10^6$, so this is our limiting bin width. As a result, we have $t_{\mathrm{bin}} = \frac{\pi}{N m_a T} 10^7 s$. This causes the sensitivity to fall off like $\frac{1}{m_a}\sqrt{m_a} = \frac{1}{\sqrt{m_a}}$. 
+
+	% if free_fall_time > math.pi/m: 
+	% 	Qeff = m*free_fall_time/math.pi
+	% 	norm = num_bins*Qeff
+	% 	time = num_shots/norm
+	% return time
+
+
+Further improvements include ``bouncing'' the atoms in the interferometer to increase the effective interrogation time, as well as spin squeezing to improve the signal to noise ratio towards the Heisenberg limit. Current squeezing experiments have demonstrated squeeze factors of $\sqrt{N} \sim 100$, providing large signal boosts as well as relaxing the requirement on atom number. These squeezing techniques have not yet been demonstrated in the context of atom interferometry, but in an optimistic scenario, we could expect at least an order of magnitude improvement from squeezing. Further improvements could come from multiplexing the interferometer, effectively running multiple shots at once, allowing us to increase the effective integration time, further decreasing the shot noise limit.
+
+\subsection{Sensitivity Estimate}
+
+We can compare this to the shot-noise limited sensitivity of an interferometer with $N$ atoms$\;s^{-1}$ :$\delta{\phi} = \frac{1}{\sqrt{N}} = 10^{-4} \frac{\mathrm{rad}}{\sqrt{\mathrm{Hz}}}$. Using the same time scaling relations as before for the noise with a total integration time of $10^7 s$, we find the sensitivity in Figure \ref{atom_int_sens_est}. 
+
+\begin{figure}
+\includegraphics[width = 0.75\textwidth]{atom_intf_sensitivity.pdf}
+\caption{Estimate of the sensitivity reach of the atom interferometer for the $g_{aNN}$ coupling.}
+\label{atom_int_sens_est}
+\end{figure}
+
+We find that this experiment is also particularly sensitive to low-mass axions, also reaching down to the astrophysical mass limit of $10^{-22}$ eV. The sensitivity is currently slightly lower than the astrophysical bounds, but it can surpass these bounds when accounting for the improvements listed above. Right above the transition mass of $m_a = \frac{\pi}{T}$, we see that the broadband and resonant experiment have nearly the same sensitivity, but the resonant experiment quickly provides greater sensitivity despite the loss of integration time. The resonant experiment shows strong sensitivity for several decades after the transition point, so the parameter space overlaps with the CASPEr experiment, leaving no parameter space uncovered.
+
+Like the torsion pendulum, atom interferometry can also be used to probe hidden photon dark matter through a similar coupling to nuclear spin. In addition, atom interferometry can be used to probe the $g_{aee}$ coupling by measuring the phase shift between different electron spin states. However, in practice, this is more difficult to control than the nuclear spin states, leading to lower sensitivity.
+
+
+\section{Atomic Magnetometers}
+
+\subsection{K-$^{3}$He Co-Magnetometer}
+
+\subsection{$^{3}$He-$^{129}$Xe Co-Magnetometer}
+
+\begingroup
+\renewcommand{\section}[2]{}%
+% \renewcommand{\chapter}[2]{}% for other classes
+\begin{thebibliography}{100}
+
+
+\end{thebibliography}
+% \endgroup
+
+\end{document}

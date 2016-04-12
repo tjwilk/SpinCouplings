@@ -5,7 +5,6 @@ import numpy as np
 import scipy
 from scipy.constants import *
 from sympy import *
-from qutip import *
 
 # conversions into eV
 boltzmann = 8.6*pow(10, -5) #in eV/K
@@ -157,7 +156,7 @@ axion_astro_coupling = pow(loss_rate_bound/energy_loss_rate, 0.5)*(mass_nucleon/
 astrophysics_bound = axion_astro_coupling
 vector_astro_bound = vector_astro_coupling
 
-for i in xrange(0, len(axion_masses)):
+for i in range(0, len(axion_masses)):
 
 	mass = pow(10, axion_masses[i])/hbar #put it in terms of Hz
 	total_time = integration_time(free_fall_time, mass, Q)

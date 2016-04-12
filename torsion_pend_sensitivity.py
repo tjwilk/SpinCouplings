@@ -5,7 +5,6 @@ import numpy as np
 import scipy
 from scipy.constants import *
 from sympy import *
-from qutip import *
 
 # conversions into eV
 boltzmann = 8.6*pow(10, -5) #in eV/K
@@ -84,7 +83,7 @@ kappa_1 = 1.155*pow(10, 11) # eV/rad
 freq_1 = 5.379*pow(10, -3) # in Hz
 # pend_moment_1 = pend_mass_1*pow(pend_radius_1, 2)*evJ_conv # in eV/s^2
 pend_moment_1 = kappa_1/(pow(2*math.pi*freq_1, 2)) # in eV/s^2
-print pend_mass_1*pow(pend_radius_1, 2)*evJ_conv, pend_moment_1
+# print pend_mass_1*pow(pend_radius_1, 2)*evJ_conv, pend_moment_1
 
 
 # pend_moment_2 = kappa/(4*pow(math.pi, 2)*pow(freq, 2)) # in eV*s^2
@@ -151,11 +150,11 @@ twist_noise_test = background(pow(noise_twist_power(pend_moment_1, test_mass, fr
 thermal_noise_test = background(pow(noise_thermal_power(temp_1, kappa_1, freq_1, pend_Q_1), 0.5), integration_time, test_mass, Q)
 noise_test = max(twist_noise_test, thermal_noise_test)
 axion_result_test = (axion_coupling_form(noise_test, Np, rho))
-print math.log10(test_mass*hbar), axion_result_test
+# print math.log10(test_mass*hbar), axion_result_test
 
 
 
-for i in xrange(0, len(axion_masses)):
+for i in range(0, len(axion_masses)):
 
 	mass = pow(10, axion_masses[i])/hbar
 
@@ -218,7 +217,7 @@ astro_coupling = pow(loss_rate_bound/energy_loss_rate, 0.5)*(mass_nucleon/temp)
 
 vector_astro_bound = astro_coupling
 
-for i in xrange(0, len(vector_masses)):
+for i in range(0, len(vector_masses)):
 
 	mass = pow(10, vector_masses[i])/hbar
 
@@ -261,7 +260,7 @@ ax.set_title('hidden photon sensitivity')
 plt.show()
 
 
-for i in xrange(0, len(vector_masses)):
+for i in range(0, len(vector_masses)):
 
 	mass = pow(10, axial_vector_masses[i])/hbar
 

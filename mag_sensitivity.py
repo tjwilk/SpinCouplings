@@ -79,28 +79,31 @@ def axion_coupling_form(noise, rho, v, mass, Q, mag_moment, relaxation_time):
 
 
 # def coupling_form(n, p, mu, rho, v):
-def axion_coupling_form_polarization(noise, rho, v, mass, Q, z_pol, relaxation_time, el_mag_moment, nucl_mag_moment):
+def axion_coupling_form_polarization(noise, rho, v, mass, Q, z_pol, relaxation_time, shot_time, el_mag_moment, nucl_mag_moment, coupling_bool):
 
 	coherence = Q/mass
 	signal_time = min(coherence, pow(relaxation_time, -1.0))
 	precession_freq = 10 #something like this (in Hz)
 
-	num_periods = floor(mass*(signal_time)/(math.pi))
-	remainder_time = signal_time - num_periods*math.pi/(mass)
-	oscillation = abs(math.sin(mass*remainder_time))
-	# suppression = 1.0
+	num_periods = floor(mass*(shot_time)/(math.pi))
+	remainder_time = shot_time - num_periods*math.pi/(mass)
+	# oscillation = abs(math.sin(mass*remainder_time))
+	oscillation = abs(math.sin(mass*signal_time))
 
 	grad_axion = v*pow(2*rho*pow(10, 15)*pow(hbarc, 3.0), 0.5)*oscillation # in eV^2
 
 	# signal_lowfreq = pow(hbar, -1.0)*z_pol*grad_axion*amplitude*nucl_relax_time/(relaxation_time*nucl_relax_time + precession_freq*relaxation_time*0.02 + nucl_relax_time*10*z_pol)
 	# signal_highfreq = z_pol*grad_axion*pow(hbar*relaxation_time, -1.0)*suppression*amplitude
 
-
+	signal = 0
 	signal_e = z_pol*grad_axion/(mass*hbar) # in eV (1/mass term comes from integrating the frequency formula)
 	signal_nucl = signal_e*(el_mag_moment/nucl_mag_moment)
 
-	coupling = 1.0
-	if mass < precession_freq: coupling = pow(10, 9)*noise/signal_e # noise should be dimensionless
+	if coupling_bool == 0: signal = signal_e
+	if coupling_bool == 1: signal = signal_nucl
+
+	coupling = pow(10, 9)*noise/signal # noise should be dimensionless
+	# if mass < precession_freq: coupling = pow(10, 9)*noise/signal # noise should be dimensionless
 
 	# if mass < pow(10, -2): coupling = pow(10, 9)*noise/signal_lowfreq # in GeV (since noise is in T)
 	# elif mass > pow(10, -2) and mass < precession_freq: coupling = pow(10, 9)*noise/signal_highfreq
@@ -111,6 +114,7 @@ axion_masses = np.linspace(-22.0, -10.0, 600)
 axion_result_1 = [0]*len(axion_masses)
 axion_result_2 = [0]*len(axion_masses)
 axion_result_3 = [0]*len(axion_masses)
+axion_result_4 = [0]*len(axion_masses)
 astrophysics_bounds = [0]*len(axion_masses)
 
 vector_masses = np.linspace(-22.0, -10.0, 600)
@@ -136,8 +140,8 @@ root_Pmag_2 = pow(10, -17)*el_mag_moment # T/sqrt(Hz)*eV/T = eV/sqrt(Hz)
 # root_Pmag_2 = pow(10, -17)*abs(nucl_mag_moment - el_mag_moment) # T/sqrt(Hz)*eV/T = eV/sqrt(Hz)
 
 # where did this come from?
-root_Ptheta_1 = 4*pow(10, -8) # rad/sqrt(Hz)
-root_Ptheta_2 = 4*pow(10, -10) # rad/sqrt(Hz)
+root_Ptheta_1 = pow(10, -8) # rad/sqrt(Hz)
+root_Ptheta_2 = pow(10, -10) # rad/sqrt(Hz)
 
 vel = pow(10, -3) # in c = 1
 rho = 0.3 # GeV/cm^3
@@ -190,10 +194,11 @@ for i in range(0, len(axion_masses)):
 	# axion_result_1[i] = math.log10(axion_coupling_form(noise_1, rho, vel, mass, Q, nucl_mag_moment, relaxation_time))
 	# axion_result_2[i] = math.log10(axion_coupling_form(noise_2, rho, vel, mass, Q, nucl_mag_moment, relaxation_time))
 
-	axion_result_1[i] = math.log10(axion_coupling_form_polarization(noise_pol_1, rho, vel, mass, Q, ez_pol, relaxation_time, el_mag_moment, nucl_mag_moment))
-	axion_result_2[i] = math.log10(axion_coupling_form_polarization(noise_pol_2, rho, vel, mass, Q, ez_pol, relaxation_time, el_mag_moment, nucl_mag_moment))
+	axion_result_1[i] = math.log10(axion_coupling_form_polarization(noise_pol_1, rho, vel, mass, Q, ez_pol, relaxation_time, shot_time, el_mag_moment, nucl_mag_moment, 0))
+	axion_result_2[i] = math.log10(axion_coupling_form_polarization(noise_pol_2, rho, vel, mass, Q, ez_pol, relaxation_time, shot_time, el_mag_moment, nucl_mag_moment, 0))
 
-
+	axion_result_3[i] = math.log10(axion_coupling_form_polarization(noise_pol_1, rho, vel, mass, Q, ez_pol, relaxation_time, shot_time, el_mag_moment, nucl_mag_moment, 1))
+	axion_result_4[i] = math.log10(axion_coupling_form_polarization(noise_pol_2, rho, vel, mass, Q, ez_pol, relaxation_time, shot_time, el_mag_moment, nucl_mag_moment, 1))
 	# axion_result_3[i] = math.log10(axion_coupling_form_polarization(noise_pol_1, rho, vel, mass, Q, ez_pol, relaxation_time, el_mag_moment, nucl_mag_moment, shot_time))
 
 
@@ -206,14 +211,28 @@ fig, ax = plt.subplots()
 
 ax.plot(axion_masses, axion_result_1)
 ax.plot(axion_masses, axion_result_2)
-# ax.plot(axion_masses, axion_result_3)
 ax.plot(axion_masses, astrophysics_bounds)
-# ax.legend(("Mag Analysis", "Polarization"), loc=2);
+ax.legend(("Current", "Shot-noise Limited"), loc=2);
 ax.set_xlabel('mass (eV) (log scale)');
-ax.set_ylabel('$g_{aee} - g_{aNN}$ (GeV)$^{-1}$ (log scale)');
+ax.set_ylabel('$g_{aee}$ (GeV)$^{-1}$ (log scale)');
 ax.set_title('axion sensitivity')
 # ax.legend(("G", "E", "CalcG", "CalcE"));
-plt.savefig("magnetometer_sensitivity.pdf")
+plt.savefig("magnetometer_sensitivity_el.pdf")
+plt.show()
+
+fig, ax = plt.subplots()
+# handles, labels = ax.get_legend_handles_labels()
+# ax.legend(handles, labels)
+
+ax.plot(axion_masses, axion_result_3)
+ax.plot(axion_masses, axion_result_4)
+ax.plot(axion_masses, astrophysics_bounds)
+ax.legend(("Current", "Shot-noise Limited"), loc=2);
+ax.set_xlabel('mass (eV) (log scale)');
+ax.set_ylabel('$g_{aNN}$ (GeV)$^{-1}$ (log scale)');
+ax.set_title('axion sensitivity')
+# ax.legend(("G", "E", "CalcG", "CalcE"));
+plt.savefig("magnetometer_sensitivity_nucl.pdf")
 plt.show()
 
 # # now for the axial vector sensitivity

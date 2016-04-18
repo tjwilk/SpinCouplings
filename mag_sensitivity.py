@@ -53,7 +53,7 @@ def background(sens, t, m, Q, relaxation_time):
 	return background
 
 # def coupling_form(n, p, mu, rho, v):
-def axion_coupling_form(noise, rho, v, mass, Q, mag_moment, relaxation_time):
+def axion_coupling_form(noise, rho, v, mass, Q, relaxation_time, shot_time, el_mag_moment, nucl_mag_moment, coupling_bool):
 
 	coherence = Q/mass
 	signal_time = min(coherence, pow(relaxation_time, -1.0))
@@ -67,13 +67,14 @@ def axion_coupling_form(noise, rho, v, mass, Q, mag_moment, relaxation_time):
 	grad_axion = v*pow(2*rho*pow(10, 15)*pow(hbarc, 3.0), 0.5)*oscillation # in eV^2
 
 	# signal = v*pow(2*rho*pow(10, 15)*pow(hbarc, 3.0), 0.5)*oscillation # in eV^2
-	signal_e = grad_axion # in eV
-	signal_nucl = signal_e*(el_mag_moment/nucl_mag_moment)
+	signal = 0
+	signal_e = grad_axion/el_mag_moment # in eV*T
+	signal_nucl = grad_axion/nucl_mag_moment # in eV*T
 
-	# if mass < precession_freq: print oscillation
+	if coupling_bool == 0: signal = signal_e
+	if coupling_bool == 1: signal = signal_nucl
 
-	coupling = 1.0
-	if mass < precession_freq: coupling = pow(10, 9)*noise/signal_nucl # in GeV (since noise is in eV)
+	coupling = pow(10, 9)*noise/signal # in GeV (since noise is in T)
 
 	return coupling
 
@@ -85,8 +86,8 @@ def axion_coupling_form_polarization(noise, rho, v, mass, Q, z_pol, relaxation_t
 	signal_time = min(coherence, pow(relaxation_time, -1.0))
 	precession_freq = 10 #something like this (in Hz)
 
-	num_periods = floor(mass*(shot_time)/(math.pi))
-	remainder_time = shot_time - num_periods*math.pi/(mass)
+	num_periods = floor(mass*(signal_time)/(math.pi))
+	remainder_time = signal_time - num_periods*math.pi/(mass)
 	# oscillation = abs(math.sin(mass*remainder_time))
 	oscillation = abs(math.sin(mass*signal_time))
 
@@ -95,8 +96,25 @@ def axion_coupling_form_polarization(noise, rho, v, mass, Q, z_pol, relaxation_t
 	# signal_lowfreq = pow(hbar, -1.0)*z_pol*grad_axion*amplitude*nucl_relax_time/(relaxation_time*nucl_relax_time + precession_freq*relaxation_time*0.02 + nucl_relax_time*10*z_pol)
 	# signal_highfreq = z_pol*grad_axion*pow(hbar*relaxation_time, -1.0)*suppression*amplitude
 
+	# phi = 1/2 * l * r_e * c * f * n_a * D(nu)
+	length = 2.4 # cm
+	r_e = 2.8*pow(10, -13) # cm
+	c = 3*pow(10, 10) # cm/s
+	n = 7*pow(10, 13) # cm^(-3)
+	lambda_0 = 770.1*pow(10, -7) # in cm
+	lambda_p = 770.76*pow(10, -7) # in cm
+	nu_0 = c/lambda_0
+	nu_p = c/lambda_p
+	delta_nu = 13.2*pow(10, 10) # in Hz
+
+	D_nu = (nu_0 - nu_p)/(pow((nu_0 - nu_p), 2) + pow(delta_nu*0.5, 2))
+
+	pol_to_angle = 0.5*length*r_e*c*n*D_nu
+
+	print D_nu
+
 	signal = 0
-	signal_e = z_pol*grad_axion/(mass*hbar) # in eV (1/mass term comes from integrating the frequency formula)
+	signal_e = pol_to_angle*z_pol*grad_axion/(mass*hbar) # in eV (1/mass term comes from integrating the frequency formula)
 	signal_nucl = signal_e*(el_mag_moment/nucl_mag_moment)
 
 	if coupling_bool == 0: signal = signal_e
@@ -133,13 +151,12 @@ german_noise_floor = 2.3*pow(10, -15) # in T/sqrt(Hz)
 nucl_mag_moment = 2.0*math.pi*3.243*pow(10, 3)*hbar*pow(10, 4) # from Hz/G -> eV/T
 el_mag_moment = 2.0*math.pi*2.8*pow(10, 6)*hbar*pow(10, 4) # in eV/T
 
-root_Pmag_1 = pow(10, -15)*el_mag_moment # T/sqrt(Hz)*eV/T = eV/sqrt(Hz)
-root_Pmag_2 = pow(10, -17)*el_mag_moment # T/sqrt(Hz)*eV/T = eV/sqrt(Hz)
+root_Pmag_1 = pow(10, -15) # T/sqrt(Hz)
+root_Pmag_2 = pow(10, -17) # T/sqrt(Hz)
 
 # root_Pmag_1 = pow(10, -15)*abs(nucl_mag_moment - el_mag_moment) # T/sqrt(Hz)*eV/T = eV/sqrt(Hz)
 # root_Pmag_2 = pow(10, -17)*abs(nucl_mag_moment - el_mag_moment) # T/sqrt(Hz)*eV/T = eV/sqrt(Hz)
 
-# where did this come from?
 root_Ptheta_1 = pow(10, -8) # rad/sqrt(Hz)
 root_Ptheta_2 = pow(10, -10) # rad/sqrt(Hz)
 
@@ -182,8 +199,11 @@ for i in range(0, len(axion_masses)):
 	total_time = shot_time
 
 	#run 1
-	noise_1 = background(root_Pmag_1, total_time, mass, Q, relaxation_time)
-	noise_2 = background(root_Pmag_2, total_time, mass, Q, relaxation_time)
+	noise_1_shot = background(root_Pmag_1, shot_time, mass, Q, relaxation_time)
+	noise_2_shot = background(root_Pmag_2, shot_time, mass, Q, relaxation_time)
+
+	noise_1 = pow(pow(noise_1_shot, 2)/num_shots, 0.5)
+	noise_2 = pow(pow(noise_2_shot, 2)/num_shots, 0.5)
 
 	noise_pol_1_shot = background(root_Ptheta_1, shot_time, mass, Q, relaxation_time)
 	noise_pol_2_shot = background(root_Ptheta_2, shot_time, mass, Q, relaxation_time)
@@ -191,15 +211,17 @@ for i in range(0, len(axion_masses)):
 	noise_pol_1 = pow(pow(noise_pol_1_shot, 2)/num_shots, 0.5)
 	noise_pol_2 = pow(pow(noise_pol_2_shot, 2)/num_shots, 0.5)
 
-	# axion_result_1[i] = math.log10(axion_coupling_form(noise_1, rho, vel, mass, Q, nucl_mag_moment, relaxation_time))
-	# axion_result_2[i] = math.log10(axion_coupling_form(noise_2, rho, vel, mass, Q, nucl_mag_moment, relaxation_time))
+	# axion_result_1[i] = math.log10(axion_coupling_form(noise_1, rho, vel, mass, Q, relaxation_time, shot_time, el_mag_moment, nucl_mag_moment, 0))
+	# axion_result_2[i] = math.log10(axion_coupling_form(noise_2, rho, vel, mass, Q, relaxation_time, shot_time, el_mag_moment, nucl_mag_moment, 0))
+
+	# axion_result_3[i] = math.log10(axion_coupling_form(noise_1, rho, vel, mass, Q, relaxation_time, shot_time, el_mag_moment, nucl_mag_moment, 1))
+	# axion_result_4[i] = math.log10(axion_coupling_form(noise_2, rho, vel, mass, Q, relaxation_time, shot_time, el_mag_moment, nucl_mag_moment, 1))
 
 	axion_result_1[i] = math.log10(axion_coupling_form_polarization(noise_pol_1, rho, vel, mass, Q, ez_pol, relaxation_time, shot_time, el_mag_moment, nucl_mag_moment, 0))
 	axion_result_2[i] = math.log10(axion_coupling_form_polarization(noise_pol_2, rho, vel, mass, Q, ez_pol, relaxation_time, shot_time, el_mag_moment, nucl_mag_moment, 0))
 
 	axion_result_3[i] = math.log10(axion_coupling_form_polarization(noise_pol_1, rho, vel, mass, Q, ez_pol, relaxation_time, shot_time, el_mag_moment, nucl_mag_moment, 1))
 	axion_result_4[i] = math.log10(axion_coupling_form_polarization(noise_pol_2, rho, vel, mass, Q, ez_pol, relaxation_time, shot_time, el_mag_moment, nucl_mag_moment, 1))
-	# axion_result_3[i] = math.log10(axion_coupling_form_polarization(noise_pol_1, rho, vel, mass, Q, ez_pol, relaxation_time, el_mag_moment, nucl_mag_moment, shot_time))
 
 
 	astrophysics_bounds[i] = math.log10(astrophysics_bound)

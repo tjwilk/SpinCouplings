@@ -17,16 +17,20 @@ nucleon_mass = 8.16*pow(10, 10) # in eV, for strontium
 grav_acceleration = 9.8 # in m/s^2
 
 def integration_time(free_fall_time, m, Q):
+
+	coherence_time = Q/m
 	# bin_range = pow(10, 3)
 	bin_range = pow(10, 1)
-	bin_width = math.pi/free_fall_time
+	# bin_width = math.pi/free_fall_time
+	bin_width = max(math.pi/free_fall_time, 1.0/coherence_time)
 	num_bins = bin_range/bin_width
-	coherence_time = Q/m
 
 	time = num_shots
 	if free_fall_time > math.pi/m: 
-		Qeff = m*free_fall_time/math.pi
-		norm = num_bins*Qeff
+		# Qeff = m*free_fall_time/math.pi
+		Qeff = m/bin_width
+		# norm = num_bins*Qeff
+		norm = min(Q, m*free_fall_time/math.pi)
 		time = num_shots/norm
 	return time
 
@@ -118,7 +122,7 @@ axion_result_2 = [0]*len(axion_masses)
 axion_result_2_broadband = [0]*len(axion_masses)
 astrophysics_bounds = [0]*len(axion_masses)
 
-vector_masses = np.linspace(-22.0, -10.0, 600)
+vector_masses = np.linspace(-22.0, 0.0, 600)
 vector_result_1 = [0]*len(vector_masses)
 vector_result_2 = [0]*len(vector_masses)
 vector_result_3 = [0]*len(vector_masses)
@@ -129,7 +133,7 @@ vector_astro = [0]*len(vector_masses)
 # integration_time = pow(10, 7)
 
 root_Ptheta_1 = pow(10, -4) # rad/sqrt(Hz)
-root_Ptheta_2 = 3*pow(10, -5) # rad/sqrt(Hz)
+root_Ptheta_2 = pow(10, -4) # rad/sqrt(Hz)
 root_Paccel_1 = pow(10, -15)*grav_acceleration # m/s^2/sqrt(Hz)
 
 # Np = pow(10, 6) # will this make an actual difference? 
@@ -163,28 +167,30 @@ vector_astro_bound = vector_astro_coupling
 for i in range(0, len(axion_masses)):
 
 	mass = pow(10, axion_masses[i])/hbar #put it in terms of Hz
-	total_time = integration_time(free_fall_time, mass, Q)
 
 	#run 1
+	total_time_1 = integration_time(free_fall_time, mass, Q)
+
 	noise_1_shot = background(root_Ptheta_1, free_fall_time, mass, Q)
-	noise_1 = pow(pow(noise_1_shot, 2)/num_shots, 0.5)
+	# noise_1 = background(root_Ptheta_1, total_time, mass, Q)
+	noise_1 = pow(pow(noise_1_shot, 2)/total_time_1, 0.5)
+	noise_1_broadband = pow(pow(noise_1_shot, 2)/num_shots, 0.5)
 
-
-	#run 1
-	noise_1 = background(root_Ptheta_1, total_time, mass, Q)
-	noise_2 = background(root_Ptheta_2, total_time, mass, Q)
 	axion_result_1[i] = math.log10(axion_coupling_form(noise_1, Np*spin, rho, vel, mass, free_fall_time, 1))
-	axion_result_2[i] = math.log10(axion_coupling_form(noise_2, Np*spin, rho, vel, mass, free_fall_time_2, 1))
-
-	# acceleration_noise_a = background(root_Paccel_1, num_shots, mass, Q)
-	# astrophysics_bounds[i] = math.log10(axion_force(acceleration_noise_a, Np*spin, rho, vel, mass, free_fall_time, 0.5))
-
-	# acceleration_noise_b = background(root_Ptheta_1, num_shots, mass, Q)
-	# axion_result_acceleration[i] = math.log10(axion_force_phase(acceleration_noise_b, Np*spin, rho, vel, mass, free_fall_time, 0.5))
-
-	noise_1_broadband = background(root_Ptheta_1, num_shots, mass, Q)
-	noise_2_broadband = background(root_Ptheta_2, num_shots, mass, Q)
 	axion_result_1_broadband[i] = math.log10(axion_coupling_form(noise_1_broadband, Np*spin, rho, vel, mass, free_fall_time, 0))
+
+
+
+	#run 2
+	total_time_2 = integration_time(free_fall_time_2, mass, Q)
+
+	noise_2_shot = background(root_Ptheta_2, free_fall_time_2, mass, Q)
+	# noise_2 = background(root_Ptheta_2, total_time, mass, Q)
+	noise_2 = pow(pow(noise_2_shot, 2)/total_time_2, 0.5)
+	noise_2_broadband = pow(pow(noise_2_shot, 2)/num_shots, 0.5)
+
+	axion_result_2[i] = math.log10(axion_coupling_form(noise_2, Np*spin, rho, vel, mass, free_fall_time_2, 1))
+	axion_result_2_broadband[i] = math.log10(axion_coupling_form(noise_2_broadband, Np*spin, rho, vel, mass, free_fall_time_2, 0))
 
 	astrophysics_bounds[i] = math.log10(astrophysics_bound)
 	vector_astro[i] = math.log10(vector_astro_bound)
@@ -202,11 +208,12 @@ fig, ax = plt.subplots()
 # ax.legend(handles, labels)
 
 ax.plot(axion_masses, axion_result_1)
-ax.plot(axion_masses, axion_result_2)
 ax.plot(axion_masses, axion_result_1_broadband)
+ax.plot(axion_masses, axion_result_2)
+ax.plot(axion_masses, axion_result_2_broadband)
 # ax.plot(axion_masses, axion_result_acceleration)
 ax.plot(axion_masses, astrophysics_bounds)
-# ax.legend(("Resonant", "Broadband", "Astrophysics"), loc=2);
+ax.legend(("Ground Res", "Ground BB", "Space Res", "Space Broadband", "Astrophysics"), loc=2);
 ax.set_xlabel('mass (eV) (log scale)');
 ax.set_ylabel('$g_{aNN}$ (GeV)$^{-1}$ (log scale)');
 ax.set_title('axion sensitivity')

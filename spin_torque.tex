@@ -241,20 +241,27 @@ The K-$^{3}$He co-magnetometer developed at Princeton is well-suited to search f
 
 The experiment functions as a self-compensating co-magnetometer by exploiting the interaction between the electron spins in K and the nuclear spins in $^{3}$He. Both the K and the $^3$He are polarized along a particular axis, which creates a relative magnetization for each atom. The densities of the atoms are chosen such that the magnetization is $M_e \sim 1 \; \mathrm{\mu G}$ and $M_n \sim 1$ mG. To first order, the K atoms only feel the magnetic field of the He atoms, and the He atoms only feel the magnetic field of the K atoms. A compensating magnetic field is then applied in the same direction as the polarization of magnitude $B = -(M_e + M_n)$. The atoms 
 
-The signal of the co-magnetometer is measured through the optical rotation of a probe beam oriented perpendicular to the polarization of the atoms. If the K atoms precess into the plane of the probe beam, then the polarization of the probe beam can be measured as a signal of the total $x$ polarization of the K atoms. The polarization signal from the dark matter will take the form 
+The signal of the co-magnetometer is measured through the optical rotation of a probe beam oriented perpendicular to the polarization of the atoms. If the K atoms precess into the plane of the probe beam, then the polarization of the probe beam can be measured as a signal of the total $x$ polarization of the K atoms. The polarization signal from an anomalous magnetic field will take the form 
 
 \begin{equation}
-P_z\gamma_e T_2\left(\beta_e - \beta_n\right)
+P_x = P_z\gamma_e T_2\beta
 \end{equation}
-where $\beta$ is the ``effective'' magnetic field of the anomalous interaction. This can be seen as just the total phase 
+where $\beta$ is the ``effective'' magnetic field of the anomalous interaction. This can be seen as just the total phase accrued by a precessing spin with Larmor frequency $\gamma_e \beta$ after some spin relaxation time $T_2$. If the signal is oscillating (as it would be for dark matter), then the total phase acquired (and thus the polarization) will take the form:
 
 \begin{equation}
-P_x = P_z\gamma_e T_2\left(\frac{g_{aee}}{\mu_e} - \frac{g_{aNN}}{\mu_N}\right)v\sqrt{\rho_DM}\cos{m_a T_2}
+P_x = P_z\gamma_e \left(\frac{g_{aee}}{\mu_e} - \frac{g_{aNN}}{\mu_N}\right)\frac{v\sqrt{\rho_{DM}}}{m_a}\sin{(m_a T_2)}
 \end{equation}
+which for small $m_a T_2$ (i.e. for ultra low-frequency dark matter), this will approximate the steady state response of the magnetometer. This means that the measurements made for bounds on Lorentz violation may be simply re-interpreted as bounds on ultralight dark matter. 
+
+The sensitivity of the current co-magnetometer as of 2011 is listed as $\delta B \sim 1 \frac{\mathrm{fT}}{\sqrt{\mathrm{Hz}}}$, which corresponds to a phase sensitivity of $\delta \phi \sim 4\times 10^{-8} \frac{\mathrm{rad}}{\sqrt{\mathrm{Hz}}}$. The shot-noise limited phase sensitivity goes as $\delta \phi = \frac{1}{\sqrt{N}{T_2}}$, where $N$ is the total number of atoms in the volume of the cell. 
+
+Using these numbers, the sensitivity to both of the dark matter couplings $g_{aee}$ and $g_{aNN}$ is shown in Figure \ref{fig:mag_sensitivity}.
+
 
 \begin{figure}
 \includegraphics[width = 0.4\textwidth]{magnetometer_sensitivity_el.pdf}
 \includegraphics[width = 0.4\textwidth]{magnetometer_sensitivity_nucl.pdf}
+\label{fig:mag_sensitivity}
 \end{figure}
 
 

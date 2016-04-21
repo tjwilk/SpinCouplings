@@ -41,6 +41,8 @@ def german_noise(floor, freq):
 		noise = floor
 	else: noise = floor/(freq)
 
+	return noise
+
 def background(sens, t, m, Q, relaxation_time):
 	coherence = Q/m
 	signal_time = min(coherence, pow(relaxation_time, -1.0))
@@ -111,7 +113,7 @@ def axion_coupling_form_polarization(noise, rho, v, mass, Q, z_pol, relaxation_t
 
 	pol_to_angle = 0.5*length*r_e*c*n*D_nu
 
-	print D_nu
+	# print D_nu
 
 	signal = 0
 	signal_e = pol_to_angle*z_pol*grad_axion/(mass*hbar) # in eV (1/mass term comes from integrating the frequency formula)
@@ -128,11 +130,34 @@ def axion_coupling_form_polarization(noise, rho, v, mass, Q, z_pol, relaxation_t
 
 	return coupling
 
+def axion_coupling_form_germans(noise, rho, v, mass, Q, shot_time, nucl_mag_moment):
+
+
+	coherence = Q/mass
+	signal_time = min(coherence, pow(relaxation_time, -1.0))
+	precession_freq = 10 #something like this
+
+	num_periods = floor(mass*(signal_time)/(math.pi))
+	remainder_time = signal_time - num_periods*math.pi/(mass)
+	oscillation = abs(math.sin(2.0*math.pi*mass*remainder_time))
+	# print oscillation
+
+	grad_axion = v*pow(2*rho*pow(10, 15)*pow(hbarc, 3.0), 0.5)*oscillation # in eV^2
+
+	# signal = v*pow(2*rho*pow(10, 15)*pow(hbarc, 3.0), 0.5)*oscillation # in eV^2
+
+	signal_nucl = grad_axion/nucl_mag_moment # in eV*T
+
+	coupling = pow(10, 9)*noise/signal_nucl # in GeV (since noise is in T)
+
+	return coupling
+
 axion_masses = np.linspace(-22.0, -10.0, 600)
 axion_result_1 = [0]*len(axion_masses)
 axion_result_2 = [0]*len(axion_masses)
 axion_result_3 = [0]*len(axion_masses)
 axion_result_4 = [0]*len(axion_masses)
+axion_result_germans = [0]*len(axion_masses)
 astrophysics_bounds = [0]*len(axion_masses)
 
 vector_masses = np.linspace(-22.0, -10.0, 600)
@@ -146,7 +171,12 @@ vector_astro = [0]*len(vector_masses)
 # integration_time = pow(10, 7)
 
 german_noise_floor = 2.3*pow(10, -15) # in T/sqrt(Hz)
-
+# german_frequency = 11*pow(10, -6) # sidereal frequency in Hz
+german_frequency = 1 # sidereal frequency in Hz
+german_factor = 1 - 13.0/4.7 # 1 - gamma_He/gamma_Xe
+german_shot_run = 86400 #they run for ~a day
+num_german_shots = 100
+german_relaxation_time = 28800
 
 nucl_mag_moment = 2.0*math.pi*3.243*pow(10, 3)*hbar*pow(10, 4) # from Hz/G -> eV/T
 el_mag_moment = 2.0*math.pi*2.8*pow(10, 6)*hbar*pow(10, 4) # in eV/T
@@ -157,8 +187,8 @@ root_Pmag_2 = pow(10, -17) # T/sqrt(Hz)
 # root_Pmag_1 = pow(10, -15)*abs(nucl_mag_moment - el_mag_moment) # T/sqrt(Hz)*eV/T = eV/sqrt(Hz)
 # root_Pmag_2 = pow(10, -17)*abs(nucl_mag_moment - el_mag_moment) # T/sqrt(Hz)*eV/T = eV/sqrt(Hz)
 
-root_Ptheta_1 = pow(10, -8) # rad/sqrt(Hz)
-root_Ptheta_2 = pow(10, -10) # rad/sqrt(Hz)
+root_Ptheta_1 = 4*pow(10, -8) # rad/sqrt(Hz)
+root_Ptheta_2 = pow(10, -9) # rad/sqrt(Hz)
 
 vel = pow(10, -3) # in c = 1
 rho = 0.3 # GeV/cm^3
@@ -176,7 +206,12 @@ shot_time = 5 # number of seconds they record
 
 # I believe this to be the shot-noise limited polarization sensitivity
 test_sensitivity = pow(num_K*relaxation_time, -0.5)
-root_Ptheta_1 = test_sensitivity
+
+test_mag_sensitivity_1 = root_Ptheta_1*relaxation_time*hbar*pow(el_mag_moment, -1.0)
+test_mag_sensitivity_2 = root_Ptheta_2*relaxation_time*hbar*pow(el_mag_moment, -1.0)
+
+# root_Ptheta_1 = test_sensitivity
+# print test_mag_sensitivity_1, test_mag_sensitivity_2
 
 #astro calculation
 alpha = 1.0/137
@@ -195,6 +230,20 @@ vector_astro_bound = vector_astro_coupling
 for i in range(0, len(axion_masses)):
 
 	mass = pow(10, axion_masses[i])/hbar #put it in terms of Hz
+	sideband_1 = german_frequency + mass
+	sideband_2 = abs(german_frequency - mass)
+
+	german_noise_sb1 = german_noise(german_noise_floor, sideband_1)
+	german_noise_sb2 = german_noise(german_noise_floor, sideband_2)
+
+	print sideband_1, sideband_2
+
+	noise_1_germans_shot = background(german_noise_sb1, german_shot_run, mass, Q, german_relaxation_time)
+	noise_1_germans = pow(pow(noise_1_germans_shot, 2)/num_german_shots, 0.5)
+
+	axion_result_germans[i] = math.log10(axion_coupling_form_germans(noise_1_germans, rho, vel, mass, Q, german_shot_run, nucl_mag_moment))
+
+
 	# total_time = integration_time
 	total_time = shot_time
 
@@ -248,8 +297,9 @@ fig, ax = plt.subplots()
 
 ax.plot(axion_masses, axion_result_3)
 ax.plot(axion_masses, axion_result_4)
+ax.plot(axion_masses, axion_result_germans)
 ax.plot(axion_masses, astrophysics_bounds)
-ax.legend(("Current", "Shot-noise Limited"), loc=2);
+ax.legend(("Current", "Shot-noise Limited", "Germans"), loc=2);
 ax.set_xlabel('mass (eV) (log scale)');
 ax.set_ylabel('$g_{aNN}$ (GeV)$^{-1}$ (log scale)');
 ax.set_title('axion sensitivity')

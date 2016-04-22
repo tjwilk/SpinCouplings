@@ -139,7 +139,7 @@ def axion_coupling_form_germans(noise, rho, v, mass, Q, shot_time, nucl_mag_mome
 
 	num_periods = floor(mass*(signal_time)/(math.pi))
 	remainder_time = signal_time - num_periods*math.pi/(mass)
-	oscillation = abs(math.sin(2.0*math.pi*mass*remainder_time))
+	oscillation = abs(math.sin(2.0*math.pi*mass*remainder_time))/mass
 	# print oscillation
 
 	grad_axion = v*pow(2*rho*pow(10, 15)*pow(hbarc, 3.0), 0.5)*oscillation # in eV^2
@@ -236,7 +236,7 @@ for i in range(0, len(axion_masses)):
 	german_noise_sb1 = german_noise(german_noise_floor, sideband_1)
 	german_noise_sb2 = german_noise(german_noise_floor, sideband_2)
 
-	print sideband_1, sideband_2
+	print(sideband_1, sideband_2)
 
 	noise_1_germans_shot = background(german_noise_sb1, german_shot_run, mass, Q, german_relaxation_time)
 	noise_1_germans = pow(pow(noise_1_germans_shot, 2)/num_german_shots, 0.5)

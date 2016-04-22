@@ -91,7 +91,7 @@ def axion_coupling_form_polarization(noise, rho, v, mass, Q, z_pol, relaxation_t
 	num_periods = floor(mass*(signal_time)/(math.pi))
 	remainder_time = signal_time - num_periods*math.pi/(mass)
 	# oscillation = abs(math.sin(mass*remainder_time))
-	oscillation = abs(math.sin(mass*signal_time))
+	oscillation = abs(math.sin(2.0*math.pi*mass*signal_time))
 
 	grad_axion = v*pow(2*rho*pow(10, 15)*pow(hbarc, 3.0), 0.5)*oscillation # in eV^2
 
@@ -139,7 +139,7 @@ def axion_coupling_form_germans(noise, rho, v, mass, Q, shot_time, nucl_mag_mome
 
 	num_periods = floor(mass*(signal_time)/(math.pi))
 	remainder_time = signal_time - num_periods*math.pi/(mass)
-	oscillation = abs(math.sin(2.0*math.pi*mass*remainder_time))
+	oscillation = abs(math.sin(2.0*math.pi*mass*remainder_time))/(mass)
 	# print oscillation
 
 	grad_axion = v*pow(2*rho*pow(10, 15)*pow(hbarc, 3.0), 0.5)*oscillation # in eV^2

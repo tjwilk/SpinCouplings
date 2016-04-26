@@ -263,19 +263,32 @@ The sensitivity of the current co-magnetometer as of 2011 is listed as $\delta B
 
 The greatest systematic effect limiting the measurement is the gyroscopic pickup of the rotation of the Earth. Due to the fact that the atoms are in an inertial reference frame, they experience a torque of $\tau = L\Omega_{\bigoplus} = \mu \beta$, so they experience an effective magnetic field of $\beta = \frac{\Omega_{\bigoplus}}{\mu}$. This effect is cancelled in the Lorentz violation measurement by taking equal measurements in the North and South positions (which give effective magnetic fields of opposite sign) and averaging them together. However, this still limits the magnetic field sensitivity to $\delta B \sim 1 \frac{\mathrm{fT}}{\sqrt{\mathrm{Hz}}}$. This effect can be reduced by moving the experiment to the South Pole, where this gyroscopic effect has a magnitude of $\sim 1$ aT. The Romalis group is currently taking data at the South Pole.
 
-However, the measurement of dark matter is helped by the fact that in frequency space, this effect is located at a specific frequency, namely $\Omega_{\bigoplus}$. However, the dark matter will appear in sideband frequencies of $\Omega_{bigoplus} \pm m_a$. Thus, as long as the integration time of the experiment is sufficient to resolve these sideband frequencies, the signal can be easily distinguished from any background effects by simply analyzing the frequency spectrum. 
+However, the measurement of dark matter is helped by the fact that in frequency space, this effect is located at a specific frequency, namely $\Omega_{\bigoplus}$. However, the dark matter will appear in sideband frequencies of $\Omega_{\bigoplus} \pm m_a$. Thus, as long as the integration time of the experiment is sufficient to resolve these sideband frequencies, the signal can be easily distinguished from any background effects by simply analyzing the frequency spectrum. 
 
 Using these numbers, the sensitivity to both of the dark matter couplings $g_{aee}$ and $g_{aNN}$ is shown in Figure \ref{fig:mag_sensitivity}. The sensitivity to the nuclear coupling is dramatically better than that of the electron coupling due to the relative size of the nuclear magnetic moment. This makes the nuclear magnetic coupling the more practical channel by which to search for the axion. 
 
 
 \begin{figure}
-\includegraphics[width = 0.4\textwidth]{magnetometer_sensitivity_el.pdf}
-\includegraphics[width = 0.4\textwidth]{magnetometer_sensitivity_nucl.pdf}
+\includegraphics[width = 0.5\textwidth]{magnetometer_sensitivity_el.pdf}
+\includegraphics[width = 0.5\textwidth]{magnetometer_sensitivity_nucl.pdf}
 \label{fig:mag_sensitivity}
 \end{figure}
 
 
 \subsection{$^{3}$He-$^{129}$Xe Co-Magnetometer}
+
+The $^{3}$He - $^{129}$Xe Co-Magnetometer has a substantially different design to the co-magnetometer described above, but has similar sensitivity to Lorentz violation measurements. This co-magnetometer functions by having co-located samples of He and Xe in a cell in a homogeneous magnetic field of $B_0 = 400$nT. This magnetic field is chosen such that the two samples have precession frequencies of $\omega_{He} = 2\pi \times 13.0$ Hz and $\omega_{Xe} = 2\pi \times 4.7$ Hz. In order to remove the effects of any stray magnetic fields in the laboratory, a weighted frequency was calculated as
+
+\begin{equation}
+\Delta \omega = \omega_{He} - \frac{\gamma_{He}}{\gamma_{Xe}}\omega_{Xe}
+\end{equation}
+With perfect compensation, this weighted frequency should cancel all stray magnetic fields in the laboratory, leaving a signal of $0$. This allows for a precise measurement of anomalous spin-couplings, which would not cancel in this weighted difference and thus provide a signal. This has been used to search for Lorentz violating couplings by measuring sidereal variations in $\Delta \omega$, similar to the analysis of the previous magnetometer.  
+
+Runs are for 24h, with sampling times of 3.2 s. Thus, for axion wavelengths longer than $3.2$s, the dark matter is best found by analyzing the difference between $\Delta \omega$ at different samples and looking for oscillation at sidebands set by the the dark matter frequency at $\Omega_{\bigoplus} \pm m_a$. For axion wavelengths shorter $3.2$s, it is best to look for sidebands at $\omega_{He} \pm m_a$ and $\omega_{Xe} \pm m_a$. 
+
+The analysis for a dark matter signal will be similar to that above, as the weighted frequency difference will now be oscillating at the dark matter frequency (actually it will be oscillating at the frequencies $\Omega_{\bigoplus} \pm m_a$). 
+
+As a result, we can search for dark matter by analyzing the frequency spectrum of the weighted frequency difference and searching for these sidebands. The 
 
 \begingroup
 \renewcommand{\section}[2]{}%

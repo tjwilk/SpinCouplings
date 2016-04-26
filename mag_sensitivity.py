@@ -16,7 +16,7 @@ evT_conv = 1.44*pow(10, -3) # in T/eV^2
 c = 3.0*pow(10, 8) # in m/s
 grav_acceleration = 9.8 # in m/s^2
 
-num_shots = pow(10, 7) #total integration time of experiment
+num_shots = pow(10, 6) #total integration time of experiment
 
 integration_time = num_shots
 
@@ -130,16 +130,19 @@ def axion_coupling_form_polarization(noise, rho, v, mass, Q, z_pol, relaxation_t
 
 	return coupling
 
-def axion_coupling_form_germans(noise, rho, v, mass, Q, shot_time, nucl_mag_moment):
-
+def axion_coupling_form_germans(noise, rho, v, mass, Q, shot_time, nucl_mag_moment, german_frequency):
 
 	coherence = Q/mass
 	signal_time = min(coherence, pow(relaxation_time, -1.0))
-	precession_freq = 10 #something like this
+	precession_freq = 0.001 #something like this 
+
+	sideband_1 = german_frequency + mass
+	sideband_2 = abs(german_frequency - mass)
 
 	num_periods = floor(mass*(signal_time)/(math.pi))
 	remainder_time = signal_time - num_periods*math.pi/(mass)
-	oscillation = abs(math.sin(2.0*math.pi*mass*remainder_time))/mass
+	# oscillation = precession_freq*abs(math.sin(2.0*math.pi*mass*remainder_time))/(mass)
+	oscillation = precession_freq/(mass)
 	# print oscillation
 
 	grad_axion = v*pow(2*rho*pow(10, 15)*pow(hbarc, 3.0), 0.5)*oscillation # in eV^2
@@ -172,7 +175,8 @@ vector_astro = [0]*len(vector_masses)
 
 german_noise_floor = 2.3*pow(10, -15) # in T/sqrt(Hz)
 # german_frequency = 11*pow(10, -6) # sidereal frequency in Hz
-german_frequency = 1 # sidereal frequency in Hz
+# german_frequency = pow(10, -3) # sidereal frequency in Hz
+german_frequency = 10 #something like this
 german_factor = 1 - 13.0/4.7 # 1 - gamma_He/gamma_Xe
 german_shot_run = 86400 #they run for ~a day
 num_german_shots = 100
@@ -236,12 +240,12 @@ for i in range(0, len(axion_masses)):
 	german_noise_sb1 = german_noise(german_noise_floor, sideband_1)
 	german_noise_sb2 = german_noise(german_noise_floor, sideband_2)
 
-	print(sideband_1, sideband_2)
+	# print(sideband_1, sideband_2)
 
 	noise_1_germans_shot = background(german_noise_sb1, german_shot_run, mass, Q, german_relaxation_time)
 	noise_1_germans = pow(pow(noise_1_germans_shot, 2)/num_german_shots, 0.5)
 
-	axion_result_germans[i] = math.log10(axion_coupling_form_germans(noise_1_germans, rho, vel, mass, Q, german_shot_run, nucl_mag_moment))
+	axion_result_germans[i] = math.log10(axion_coupling_form_germans(noise_1_germans, rho, vel, mass, Q, german_shot_run, nucl_mag_moment, german_frequency))
 
 
 	# total_time = integration_time

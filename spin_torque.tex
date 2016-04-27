@@ -284,12 +284,21 @@ The $^{3}$He - $^{129}$Xe Co-Magnetometer has a substantially different design t
 \end{equation}
 With perfect compensation, this weighted frequency should cancel all stray magnetic fields in the laboratory, leaving a signal of $0$. This allows for a precise measurement of anomalous spin-couplings, which would not cancel in this weighted difference and thus provide a signal. This has been used to search for Lorentz violating couplings by measuring sidereal variations in $\Delta \omega$, similar to the analysis of the previous magnetometer.  
 
-Runs are for 24h, with sampling times of 3.2 s. Thus, for axion wavelengths longer than $3.2$s, the dark matter is best found by analyzing the difference between $\Delta \omega$ at different samples and looking for oscillation at sidebands set by the the dark matter frequency at $\Omega_{\bigoplus} \pm m_a$. For axion wavelengths shorter $3.2$s, it is best to look for sidebands at $\omega_{He} \pm m_a$ and $\omega_{Xe} \pm m_a$. 
+Runs are for 24h, with sampling times of 3.2 s. Thus, for axion wavelengths longer than $3.2$s, the dark matter is best found by analyzing the difference between $\Delta \omega$ at different samples and looking for oscillation at sidebands set by the the dark matter frequency at $\Omega_{\bigoplus} \pm m_a$. 
+
+For axion wavelengths shorter $3.2$s, the signal will arise in the individual $3.2$s samples. The total magnetization signal from the SQUID will now take the form
+
+\begin{align}
+B(t) = B_T\cos{\left(\omega_{He} + g_{aNN}v\sqrt{\rho_{DM}}\sin{m_a t}\right)t} \\
+\simeq B_T\bigg(\cos{\omega_{He}t} - gv\sqrt{\rho_{DM}}t\cos{(\omega_{He} \pm m_a)t}\bigg)
+\end{align}
+
+Thus, the signal arises as a single frequency peak of amplitude $B_T$ at $\omega_{He}$, as expected from the normal magnetization signal, as well as two sidebands with amplitude $B_Tgv\sqrt{\rho_{DM}}t$ at frequencies $\omega_{He} \pm m_a$. Thus, as long as these sidebands can be sufficiently resolved, the dark matter signal can be measured in this channel. The requirement for these sidebands to be sufficiently resolved is 
+\tjw{FINISH}
 
 The analysis for a dark matter signal will be similar to that above, as the weighted frequency difference will now be oscillating at the dark matter frequency (actually it will be oscillating at the frequencies $\Omega_{\bigoplus} \pm m_a$). 
 
-As a result, we can search for dark matter by analyzing the frequency spectrum of the weighted frequency difference and searching for these sidebands. The 
-
+The systematic errors for this experiment are never explicitly mentioned, but we assume they are of a similar type to those in the previous experiment. As a result, they can be subtracted out using the same kind of analysis. The results for these analyses are shown in Figure \tjw{whatever}
 \begingroup
 \renewcommand{\section}[2]{}%
 % \renewcommand{\chapter}[2]{}% for other classes

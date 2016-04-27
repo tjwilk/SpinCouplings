@@ -43,9 +43,9 @@ def german_noise(floor, freq):
 
 	return noise
 
-def background(sens, t, m, Q, relaxation_time):
+def background(sens, t, m, Q, relaxation_rate):
 	coherence = Q/m
-	signal_time = min(coherence, pow(relaxation_time, -1.0))
+	signal_time = min(coherence, pow(relaxation_rate, -1.0))
 
 	background = 0
 	if t <= signal_time:
@@ -55,10 +55,10 @@ def background(sens, t, m, Q, relaxation_time):
 	return background
 
 # def coupling_form(n, p, mu, rho, v):
-def axion_coupling_form(noise, rho, v, mass, Q, relaxation_time, shot_time, el_mag_moment, nucl_mag_moment, coupling_bool):
+def axion_coupling_form(noise, rho, v, mass, Q, relaxation_rate, shot_time, el_mag_moment, nucl_mag_moment, coupling_bool):
 
 	coherence = Q/mass
-	signal_time = min(coherence, pow(relaxation_time, -1.0))
+	signal_time = min(coherence, pow(relaxation_rate, -1.0))
 	precession_freq = 10 #something like this
 
 	num_periods = floor(mass*(signal_time)/(math.pi))
@@ -82,10 +82,10 @@ def axion_coupling_form(noise, rho, v, mass, Q, relaxation_time, shot_time, el_m
 
 
 # def coupling_form(n, p, mu, rho, v):
-def axion_coupling_form_polarization(noise, rho, v, mass, Q, z_pol, relaxation_time, shot_time, el_mag_moment, nucl_mag_moment, coupling_bool):
+def axion_coupling_form_polarization(noise, rho, v, mass, Q, z_pol, relaxation_rate, shot_time, el_mag_moment, nucl_mag_moment, coupling_bool):
 
 	coherence = Q/mass
-	signal_time = min(coherence, pow(relaxation_time, -1.0))
+	signal_time = min(coherence, pow(relaxation_rate, -1.0))
 	precession_freq = 10 #something like this (in Hz)
 
 	num_periods = floor(mass*(signal_time)/(math.pi))
@@ -95,8 +95,8 @@ def axion_coupling_form_polarization(noise, rho, v, mass, Q, z_pol, relaxation_t
 
 	grad_axion = v*pow(2*rho*pow(10, 15)*pow(hbarc, 3.0), 0.5)*oscillation # in eV^2
 
-	# signal_lowfreq = pow(hbar, -1.0)*z_pol*grad_axion*amplitude*nucl_relax_time/(relaxation_time*nucl_relax_time + precession_freq*relaxation_time*0.02 + nucl_relax_time*10*z_pol)
-	# signal_highfreq = z_pol*grad_axion*pow(hbar*relaxation_time, -1.0)*suppression*amplitude
+	# signal_lowfreq = pow(hbar, -1.0)*z_pol*grad_axion*amplitude*nucl_relax_time/(relaxation_rate*nucl_relax_time + precession_freq*relaxation_rate*0.02 + nucl_relax_time*10*z_pol)
+	# signal_highfreq = z_pol*grad_axion*pow(hbar*relaxation_rate, -1.0)*suppression*amplitude
 
 	# phi = 1/2 * l * r_e * c * f * n_a * D(nu)
 	length = 2.4 # cm
@@ -130,28 +130,41 @@ def axion_coupling_form_polarization(noise, rho, v, mass, Q, z_pol, relaxation_t
 
 	return coupling
 
-def axion_coupling_form_germans(noise, rho, v, mass, Q, shot_time, nucl_mag_moment, german_frequency):
+def axion_coupling_form_germans(noise, rho, v, mass, Q, relaxation_rate, shot_time, nucl_mag_moment, german_frequency):
 
 	coherence = Q/mass
-	signal_time = min(coherence, pow(relaxation_time, -1.0))
+	signal_time = min(coherence, pow(relaxation_rate, -1.0))
 	precession_freq = 0.001 #something like this 
+	earth_freq = pow(10, -6) #something like this 
+
 
 	sideband_1 = german_frequency + mass
 	sideband_2 = abs(german_frequency - mass)
 
 	num_periods = floor(mass*(signal_time)/(math.pi))
 	remainder_time = signal_time - num_periods*math.pi/(mass)
-	# oscillation = precession_freq*abs(math.sin(2.0*math.pi*mass*remainder_time))/(mass)
-	oscillation = precession_freq/(mass)
+	oscillation = earth_freq*abs(math.sin(2.0*math.pi*mass*remainder_time))/(mass)
+	# oscillation = precession_freq/(mass)
 	# print oscillation
 
 	grad_axion = v*pow(2*rho*pow(10, 15)*pow(hbarc, 3.0), 0.5)*oscillation # in eV^2
-
 	# signal = v*pow(2*rho*pow(10, 15)*pow(hbarc, 3.0), 0.5)*oscillation # in eV^2
 
 	signal_nucl = grad_axion/nucl_mag_moment # in eV*T
 
 	coupling = pow(10, 9)*noise/signal_nucl # in GeV (since noise is in T)
+
+	return coupling
+
+def axion_coupling_form_germans_sample(noise, rho, v, mass, Q, relaxation_rate, shot_time, transverse_mag_amplitude):
+
+	coherence = Q/mass
+	signal_time = min(coherence, pow(relaxation_rate, -1.0), shot_time)
+
+	grad_axion = v*pow(2*rho*pow(10, 15)*pow(hbarc, 3.0), 0.5) # in eV^2
+	signal = transverse_mag_amplitude*grad_axion*signal_time/hbar # in eV*T
+
+	coupling = pow(10, 9)*noise/signal
 
 	return coupling
 
@@ -161,6 +174,7 @@ axion_result_2 = [0]*len(axion_masses)
 axion_result_3 = [0]*len(axion_masses)
 axion_result_4 = [0]*len(axion_masses)
 axion_result_germans = [0]*len(axion_masses)
+axion_result_germans_2 = [0]*len(axion_masses)
 astrophysics_bounds = [0]*len(axion_masses)
 
 vector_masses = np.linspace(-22.0, -10.0, 600)
@@ -179,8 +193,12 @@ german_noise_floor = 2.3*pow(10, -15) # in T/sqrt(Hz)
 german_frequency = 10 #something like this
 german_factor = 1 - 13.0/4.7 # 1 - gamma_He/gamma_Xe
 german_shot_run = 86400 #they run for ~a day
+german_shot_samples = 3 #num seconds per sample
 num_german_shots = 100
-german_relaxation_time = 28800
+german_relaxation_rate = 3*pow(10, -5) # in 1/s
+
+transverse_mag_amplitude = 10*pow(10, -9) #10 pT is from paper
+
 
 nucl_mag_moment = 2.0*math.pi*3.243*pow(10, 3)*hbar*pow(10, 4) # from Hz/G -> eV/T
 el_mag_moment = 2.0*math.pi*2.8*pow(10, 6)*hbar*pow(10, 4) # in eV/T
@@ -204,15 +222,15 @@ K_density = 7*pow(10, 13) # in 1/cm^3
 volume = 4*pow(2.4, 3) # in cm^3
 num_K = K_density*volume
 ez_pol = 0.5
-relaxation_time = 353 # in 1/s
+relaxation_rate = 353 # in 1/s
 nuclear_relax_time = 2*pow(10, -4) # in 1/s
 shot_time = 5 # number of seconds they record
 
 # I believe this to be the shot-noise limited polarization sensitivity
-test_sensitivity = pow(num_K*relaxation_time, -0.5)
+test_sensitivity = pow(num_K*relaxation_rate, -0.5)
 
-test_mag_sensitivity_1 = root_Ptheta_1*relaxation_time*hbar*pow(el_mag_moment, -1.0)
-test_mag_sensitivity_2 = root_Ptheta_2*relaxation_time*hbar*pow(el_mag_moment, -1.0)
+test_mag_sensitivity_1 = root_Ptheta_1*relaxation_rate*hbar*pow(el_mag_moment, -1.0)
+test_mag_sensitivity_2 = root_Ptheta_2*relaxation_rate*hbar*pow(el_mag_moment, -1.0)
 
 # root_Ptheta_1 = test_sensitivity
 # print test_mag_sensitivity_1, test_mag_sensitivity_2
@@ -242,39 +260,42 @@ for i in range(0, len(axion_masses)):
 
 	# print(sideband_1, sideband_2)
 
-	noise_1_germans_shot = background(german_noise_sb1, german_shot_run, mass, Q, german_relaxation_time)
+	noise_1_germans_shot = background(german_noise_sb1, german_shot_run, mass, Q, german_relaxation_rate)
 	noise_1_germans = pow(pow(noise_1_germans_shot, 2)/num_german_shots, 0.5)
 
-	axion_result_germans[i] = math.log10(axion_coupling_form_germans(noise_1_germans, rho, vel, mass, Q, german_shot_run, nucl_mag_moment, german_frequency))
+	noise_1_germans_sample = background(german_noise_sb1, german_shot_samples, mass, Q, german_relaxation_rate)
+	noise_1_germans = pow(pow(noise_1_germans_shot, 2)/(num_german_shots*german_shot_run/german_shot_samples), 0.5)
 
+	axion_result_germans[i] = math.log10(axion_coupling_form_germans(noise_1_germans, rho, vel, mass, Q, german_relaxation_rate, german_shot_run, nucl_mag_moment, german_frequency))
+	axion_result_germans_2[i] = math.log10(axion_coupling_form_germans_sample(noise_1_germans, rho, vel, mass, Q, german_relaxation_rate, german_shot_samples, transverse_mag_amplitude))
 
 	# total_time = integration_time
 	total_time = shot_time
 
 	#run 1
-	noise_1_shot = background(root_Pmag_1, shot_time, mass, Q, relaxation_time)
-	noise_2_shot = background(root_Pmag_2, shot_time, mass, Q, relaxation_time)
+	noise_1_shot = background(root_Pmag_1, shot_time, mass, Q, relaxation_rate)
+	noise_2_shot = background(root_Pmag_2, shot_time, mass, Q, relaxation_rate)
 
 	noise_1 = pow(pow(noise_1_shot, 2)/num_shots, 0.5)
 	noise_2 = pow(pow(noise_2_shot, 2)/num_shots, 0.5)
 
-	noise_pol_1_shot = background(root_Ptheta_1, shot_time, mass, Q, relaxation_time)
-	noise_pol_2_shot = background(root_Ptheta_2, shot_time, mass, Q, relaxation_time)
+	noise_pol_1_shot = background(root_Ptheta_1, shot_time, mass, Q, relaxation_rate)
+	noise_pol_2_shot = background(root_Ptheta_2, shot_time, mass, Q, relaxation_rate)
 
 	noise_pol_1 = pow(pow(noise_pol_1_shot, 2)/num_shots, 0.5)
 	noise_pol_2 = pow(pow(noise_pol_2_shot, 2)/num_shots, 0.5)
 
-	# axion_result_1[i] = math.log10(axion_coupling_form(noise_1, rho, vel, mass, Q, relaxation_time, shot_time, el_mag_moment, nucl_mag_moment, 0))
-	# axion_result_2[i] = math.log10(axion_coupling_form(noise_2, rho, vel, mass, Q, relaxation_time, shot_time, el_mag_moment, nucl_mag_moment, 0))
+	# axion_result_1[i] = math.log10(axion_coupling_form(noise_1, rho, vel, mass, Q, relaxation_rate, shot_time, el_mag_moment, nucl_mag_moment, 0))
+	# axion_result_2[i] = math.log10(axion_coupling_form(noise_2, rho, vel, mass, Q, relaxation_rate, shot_time, el_mag_moment, nucl_mag_moment, 0))
 
-	# axion_result_3[i] = math.log10(axion_coupling_form(noise_1, rho, vel, mass, Q, relaxation_time, shot_time, el_mag_moment, nucl_mag_moment, 1))
-	# axion_result_4[i] = math.log10(axion_coupling_form(noise_2, rho, vel, mass, Q, relaxation_time, shot_time, el_mag_moment, nucl_mag_moment, 1))
+	# axion_result_3[i] = math.log10(axion_coupling_form(noise_1, rho, vel, mass, Q, relaxation_rate, shot_time, el_mag_moment, nucl_mag_moment, 1))
+	# axion_result_4[i] = math.log10(axion_coupling_form(noise_2, rho, vel, mass, Q, relaxation_rate, shot_time, el_mag_moment, nucl_mag_moment, 1))
 
-	axion_result_1[i] = math.log10(axion_coupling_form_polarization(noise_pol_1, rho, vel, mass, Q, ez_pol, relaxation_time, shot_time, el_mag_moment, nucl_mag_moment, 0))
-	axion_result_2[i] = math.log10(axion_coupling_form_polarization(noise_pol_2, rho, vel, mass, Q, ez_pol, relaxation_time, shot_time, el_mag_moment, nucl_mag_moment, 0))
+	axion_result_1[i] = math.log10(axion_coupling_form_polarization(noise_pol_1, rho, vel, mass, Q, ez_pol, relaxation_rate, shot_time, el_mag_moment, nucl_mag_moment, 0))
+	axion_result_2[i] = math.log10(axion_coupling_form_polarization(noise_pol_2, rho, vel, mass, Q, ez_pol, relaxation_rate, shot_time, el_mag_moment, nucl_mag_moment, 0))
 
-	axion_result_3[i] = math.log10(axion_coupling_form_polarization(noise_pol_1, rho, vel, mass, Q, ez_pol, relaxation_time, shot_time, el_mag_moment, nucl_mag_moment, 1))
-	axion_result_4[i] = math.log10(axion_coupling_form_polarization(noise_pol_2, rho, vel, mass, Q, ez_pol, relaxation_time, shot_time, el_mag_moment, nucl_mag_moment, 1))
+	axion_result_3[i] = math.log10(axion_coupling_form_polarization(noise_pol_1, rho, vel, mass, Q, ez_pol, relaxation_rate, shot_time, el_mag_moment, nucl_mag_moment, 1))
+	axion_result_4[i] = math.log10(axion_coupling_form_polarization(noise_pol_2, rho, vel, mass, Q, ez_pol, relaxation_rate, shot_time, el_mag_moment, nucl_mag_moment, 1))
 
 
 	astrophysics_bounds[i] = math.log10(astrophysics_bound)
@@ -302,8 +323,9 @@ fig, ax = plt.subplots()
 ax.plot(axion_masses, axion_result_3)
 ax.plot(axion_masses, axion_result_4)
 ax.plot(axion_masses, axion_result_germans)
+ax.plot(axion_masses, axion_result_germans_2)
 ax.plot(axion_masses, astrophysics_bounds)
-ax.legend(("Current", "Shot-noise Limited", "Germans"), loc=2);
+ax.legend(("Current", "Shot-noise Limited", "Germans", "Germans 2"), loc=2);
 ax.set_xlabel('mass (eV) (log scale)');
 ax.set_ylabel('$g_{aNN}$ (GeV)$^{-1}$ (log scale)');
 ax.set_title('axion sensitivity')

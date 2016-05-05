@@ -63,7 +63,7 @@ def axion_coupling_form(noise, rho, v, mass, Q, relaxation_rate, shot_time, el_m
 
 	num_periods = floor(mass*(signal_time)/(math.pi))
 	remainder_time = signal_time - num_periods*math.pi/(mass)
-	oscillation = abs(math.sin(2.0*math.pi*mass*remainder_time))
+	oscillation = abs(math.sin(mass*remainder_time))
 	# print oscillation
 
 	grad_axion = v*pow(2*rho*pow(10, 15)*pow(hbarc, 3.0), 0.5)*oscillation # in eV^2
@@ -91,7 +91,7 @@ def axion_coupling_form_polarization(noise, rho, v, mass, Q, z_pol, relaxation_r
 	num_periods = floor(mass*(signal_time)/(math.pi))
 	remainder_time = signal_time - num_periods*math.pi/(mass)
 	# oscillation = abs(math.sin(mass*remainder_time))
-	oscillation = abs(math.sin(2.0*math.pi*mass*signal_time))
+	oscillation = abs(math.sin(mass*signal_time))
 
 	grad_axion = v*pow(2*rho*pow(10, 15)*pow(hbarc, 3.0), 0.5)*oscillation # in eV^2
 
@@ -143,7 +143,7 @@ def axion_coupling_form_germans(noise, rho, v, mass, Q, relaxation_rate, shot_ti
 
 	num_periods = floor(mass*(signal_time)/(math.pi))
 	remainder_time = signal_time - num_periods*math.pi/(mass)
-	oscillation = earth_freq*abs(math.sin(2.0*math.pi*mass*remainder_time))/(mass)
+	oscillation = earth_freq*abs(math.sin(mass*remainder_time))/(mass)
 	# oscillation = precession_freq/(mass)
 	# print oscillation
 
@@ -160,9 +160,25 @@ def axion_coupling_form_germans_sample(noise, rho, v, mass, Q, relaxation_rate, 
 
 	coherence = Q/mass
 	signal_time = min(coherence, pow(relaxation_rate, -1.0), shot_time)
+	precession_freq = 10 #something like this 
+
+
+	sideband_1 = precession_freq + mass
+	sideband_2 = abs(precession_freq - mass)
+
+	oscillation_1 = abs(math.sin(sideband_1*shot_time))
+	oscillation_2 = abs(math.sin(sideband_2*shot_time))
+
+	# print oscillation_1, oscillation_2
 
 	grad_axion = v*pow(2*rho*pow(10, 15)*pow(hbarc, 3.0), 0.5) # in eV^2
-	signal = transverse_mag_amplitude*grad_axion*signal_time/hbar # in eV*T
+	signal = transverse_mag_amplitude*grad_axion*signal_time*max(oscillation_1, oscillation_2)/hbar # in eV*T
+
+	# freq_offset = pow(10, -9)*grad_axion*math.sin(mass*shot_time)
+	# offset = math.sin(precession_freq*shot_time)- math.sin((precession_freq + freq_offset)*shot_time)
+	# print freq_offset, offset
+	# if abs(offset) > pow(10, -15): print mass
+
 
 	coupling = pow(10, 9)*noise/signal
 
@@ -188,7 +204,7 @@ vector_astro = [0]*len(vector_masses)
 # integration_time = pow(10, 7)
 
 german_noise_floor = 2.3*pow(10, -15) # in T/sqrt(Hz)
-# german_frequency = 11*pow(10, -6) # sidereal frequency in Hz
+earth_frequency = 11*pow(10, -6) # sidereal frequency in Hz
 # german_frequency = pow(10, -3) # sidereal frequency in Hz
 german_frequency = 10 #something like this
 german_factor = 1 - 13.0/4.7 # 1 - gamma_He/gamma_Xe
@@ -251,9 +267,15 @@ vector_astro_bound = vector_astro_coupling
 
 for i in range(0, len(axion_masses)):
 
+	sample_resolved = false
+
 	mass = pow(10, axion_masses[i])/hbar #put it in terms of Hz
-	sideband_1 = german_frequency + mass
-	sideband_2 = abs(german_frequency - mass)
+	sideband_1 = earth_frequency + mass
+	sideband_2 = abs(earth_frequency - mass)
+
+	bandwidth = math.pi/german_shot_samples
+	DM_bandwidth = min(mass/Q, bandwidth)
+	# german_freq_resolution = pow(bandwidth*pow(german_shot_samples, 3), -0.5)
 
 	german_noise_sb1 = german_noise(german_noise_floor, sideband_1)
 	german_noise_sb2 = german_noise(german_noise_floor, sideband_2)
@@ -263,11 +285,18 @@ for i in range(0, len(axion_masses)):
 	noise_1_germans_shot = background(german_noise_sb1, german_shot_run, mass, Q, german_relaxation_rate)
 	noise_1_germans = pow(pow(noise_1_germans_shot, 2)/num_german_shots, 0.5)
 
-	noise_1_germans_sample = background(german_noise_sb1, german_shot_samples, mass, Q, german_relaxation_rate)
-	noise_1_germans = pow(pow(noise_1_germans_shot, 2)/(num_german_shots*german_shot_run/german_shot_samples), 0.5)
+	noise_2_germans_shot_sb1 = background(german_noise_sb1, german_shot_samples, mass, Q, german_relaxation_rate)
+	noise_2_germans_shot_sb2 = background(german_noise_sb1, german_shot_samples, mass, Q, german_relaxation_rate)
+	noise_2_germans = pow(pow(min(noise_2_germans_shot_sb1, noise_2_germans_shot_sb2), 2)/(num_german_shots*german_shot_run/german_shot_samples), 0.5)
+
+	if bandwidth/2.0 < (mass + DM_bandwidth/2.0) : 
+		sample_resolved = true
+		# print "yay ", mass*hbar
 
 	axion_result_germans[i] = math.log10(axion_coupling_form_germans(noise_1_germans, rho, vel, mass, Q, german_relaxation_rate, german_shot_run, nucl_mag_moment, german_frequency))
-	axion_result_germans_2[i] = math.log10(axion_coupling_form_germans_sample(noise_1_germans, rho, vel, mass, Q, german_relaxation_rate, german_shot_samples, transverse_mag_amplitude))
+	if sample_resolved: 
+		axion_result_germans_2[i] = math.log10(axion_coupling_form_germans_sample(noise_2_germans, rho, vel, mass, Q, german_relaxation_rate, german_shot_samples, transverse_mag_amplitude))
+	else: axion_result_germans_2[i] = 1.0
 
 	# total_time = integration_time
 	total_time = shot_time
@@ -311,7 +340,7 @@ ax.plot(axion_masses, astrophysics_bounds)
 ax.legend(("Current", "Shot-noise Limited"), loc=2);
 ax.set_xlabel('mass (eV) (log scale)');
 ax.set_ylabel('$g_{aee}$ (GeV)$^{-1}$ (log scale)');
-ax.set_title('axion sensitivity')
+ax.set_title('axion sensitivity (electron coupling)')
 # ax.legend(("G", "E", "CalcG", "CalcE"));
 plt.savefig("magnetometer_sensitivity_el.pdf")
 plt.show()
@@ -325,10 +354,11 @@ ax.plot(axion_masses, axion_result_4)
 ax.plot(axion_masses, axion_result_germans)
 ax.plot(axion_masses, axion_result_germans_2)
 ax.plot(axion_masses, astrophysics_bounds)
-ax.legend(("Current", "Shot-noise Limited", "Germans", "Germans 2"), loc=2);
+# ax.legend(("Current", "Shot-noise Limited", "Germans", "Germans 2"), loc=2);
+ax.legend(("Current", "Shot-noise Limited", "Astrophysics"), loc=2);
 ax.set_xlabel('mass (eV) (log scale)');
 ax.set_ylabel('$g_{aNN}$ (GeV)$^{-1}$ (log scale)');
-ax.set_title('axion sensitivity')
+ax.set_title('axion sensitivity (nuclear coupling)')
 # ax.legend(("G", "E", "CalcG", "CalcE"));
 plt.savefig("magnetometer_sensitivity_nucl.pdf")
 plt.show()

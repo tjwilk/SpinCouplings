@@ -252,25 +252,25 @@ If the K atoms are subjected to an anomalous spin-coupling (such as Lorentz viol
 \begin{equation}
 P_x = P_z\gamma_e T_2\beta
 \end{equation}
-where $\beta$ is the ``effective'' magnetic field of the anomalous interaction. This can be seen as just the total phase accrued by a precessing spin with Larmor frequency $\gamma_e \beta$ after some spin relaxation time $T_2$. If the signal is oscillating (as it would be for dark matter), then the total phase acquired (and thus the polarization) will take the form:
+where $\beta$ is the ``effective'' magnetic field of the anomalous interaction. This can be seen as just the total phase accrued by a precessing spin with Larmor frequency $\gamma_e \beta$ after some spin relaxation time $T_2$ (roughly 3 ms for K). If the signal is oscillating (as it would be for dark matter), then the total phase acquired (and thus the polarization) will take the form:
 
 \begin{equation}
 P_x = P_z\gamma_e \left(\frac{g_{aee}}{\mu_e} - \frac{g_{aNN}}{\mu_N}\right)\frac{v\sqrt{\rho_{DM}}}{m_a}\sin{(m_a T_2)}
 \end{equation}
 which for small $m_a T_2$ (i.e. for ultra low-frequency dark matter), this will approximate the steady state response of the magnetometer. This means that the measurements made for bounds on Lorentz violation may be simply re-interpreted as bounds on ultralight dark matter. 
 
-The sensitivity of the current co-magnetometer as of 2011 is listed as $\delta B \sim 1 \frac{\mathrm{fT}}{\sqrt{\mathrm{Hz}}}$, which corresponds to a phase sensitivity of $\delta \phi \sim 4\times 10^{-8} \frac{\mathrm{rad}}{\sqrt{\mathrm{Hz}}}$. The shot-noise limited phase sensitivity goes as $\delta \phi = \frac{1}{\sqrt{N}{T_2}}$, where $N$ is the total number of atoms in the volume of the cell. Currently, the sensitivity of the apparatus is limited by the relaxation time of the K atoms. 
+The sensitivity of the current co-magnetometer as of 2011 is listed as $\delta B \sim 1 \frac{\mathrm{fT}}{\sqrt{\mathrm{Hz}}}$, which corresponds to a phase sensitivity of $\delta \phi \sim 4\times 10^{-8} \frac{\mathrm{rad}}{\sqrt{\mathrm{Hz}}}$. The shot-noise limited phase sensitivity goes as $\delta \phi = \frac{1}{\sqrt{N T_2}}$, where $N$ is the total number of atoms in the volume of the cell. Currently, the sensitivity of the apparatus is limited by the relaxation time of the K atoms, which limits the phase sensitivity at $\delta \phi = 4\times 10^{-8} \frac{\mathrm{rad}}{\sqrt{\mathrm{Hz}}}$.
 
 The greatest systematic effect limiting the measurement is the gyroscopic pickup of the rotation of the Earth. Due to the fact that the atoms are in an inertial reference frame, they experience a torque of $\tau = L\Omega_{\bigoplus} = \mu \beta$, so they experience an effective magnetic field of $\beta = \frac{\Omega_{\bigoplus}}{\mu}$. This effect is cancelled in the Lorentz violation measurement by taking equal measurements in the North and South positions (which give effective magnetic fields of opposite sign) and averaging them together. However, this still limits the magnetic field sensitivity to $\delta B \sim 1 \frac{\mathrm{fT}}{\sqrt{\mathrm{Hz}}}$. This effect can be reduced by moving the experiment to the South Pole, where this gyroscopic effect has a magnitude of $\sim 1$ aT. The Romalis group is currently taking data at the South Pole.
 
 However, the measurement of dark matter is helped by the fact that in frequency space, this effect is located at a specific frequency, namely $\Omega_{\bigoplus}$. However, the dark matter will appear in sideband frequencies of $\Omega_{\bigoplus} \pm m_a$. Thus, as long as the integration time of the experiment is sufficient to resolve these sideband frequencies, the signal can be easily distinguished from any background effects by simply analyzing the frequency spectrum. 
 
-Using these numbers, the sensitivity to both of the dark matter couplings $g_{aee}$ and $g_{aNN}$ is shown in Figure \ref{fig:mag_sensitivity}. The sensitivity to the nuclear coupling is dramatically better than that of the electron coupling due to the relative size of the nuclear magnetic moment. This makes the nuclear magnetic coupling the more practical channel by which to search for the axion. 
+Using these numbers, the sensitivity to both of the dark matter couplings $g_{aee}$ and $g_{aNN}$ is shown in Figure \ref{fig:mag_sensitivity}. The sensitivity to the nuclear coupling is dramatically better than that of the electron coupling due to the relative size of the nuclear magnetic moment. This makes the nuclear magnetic coupling the more practical channel by which to search for the axion. Using the current setup with a shot time of $5$s and a total number of shots of $10^6$ (which is realistic for this experiment), the total reach of the nuclear coupling should reach past the astrophysics bounds by almost two orders of magnitude, providing the best bound on this coupling. With further experimental improvements to allow the magnetometer to run at shot-noise limited sensitivity, this bound can be improved almost down to the level of $f_a \sim 10^{13}$ GeV. 
 
 
 \begin{figure}
-\includegraphics[width = 0.5\textwidth]{magnetometer_sensitivity_el.pdf}
-\includegraphics[width = 0.5\textwidth]{magnetometer_sensitivity_nucl.pdf}
+\includegraphics[width = 0.45\textwidth]{magnetometer_sensitivity_el.pdf}
+\includegraphics[width = 0.45\textwidth]{magnetometer_sensitivity_nucl.pdf}
 \label{fig:mag_sensitivity}
 \end{figure}
 
@@ -284,7 +284,17 @@ The $^{3}$He - $^{129}$Xe Co-Magnetometer has a substantially different design t
 \end{equation}
 With perfect compensation, this weighted frequency should cancel all stray magnetic fields in the laboratory, leaving a signal of $0$. This allows for a precise measurement of anomalous spin-couplings, which would not cancel in this weighted difference and thus provide a signal. This has been used to search for Lorentz violating couplings by measuring sidereal variations in $\Delta \omega$, similar to the analysis of the previous magnetometer.  
 
-Runs are for 24h, with sampling times of 3.2 s. Thus, for axion wavelengths longer than $3.2$s, the dark matter is best found by analyzing the difference between $\Delta \omega$ at different samples and looking for oscillation at sidebands set by the the dark matter frequency at $\Omega_{\bigoplus} \pm m_a$. 
+Due to the long relaxation times of both He and Xe, the magnetometer is able to run for a single shot time of $24$h, with sampling times of $3.2$s to make frequency measurements. This allows for two possibilities for analysis to search for dark matter: searching for frequency variation between the various samples and searching for frequency variation within the sample.
+
+
+
+ Thus, for axion wavelengths longer than $3.2$s, the dark matter is best found by analyzing the difference between $\Delta \omega$ at different samples and looking for oscillation at sidebands set by the the dark matter frequency at $\Omega_{\bigoplus} \pm m_a$. The results from this analysis are shown by the red curve in Figure \ref{fig:mag_sensitivity}. One particular disadvantage to this technique is due to the $\frac{1}{f}$ frequency noise from the SQUID. At very low dark matter frequencies, the sideband frequencies are very small and thus 
+
+
+
+
+
+
 
 For axion wavelengths shorter $3.2$s, the signal will arise in the individual $3.2$s samples. The total magnetization signal from the SQUID will now take the form
 
@@ -293,12 +303,15 @@ B(t) = B_T\cos{\left(\omega_{He} + g_{aNN}v\sqrt{\rho_{DM}}\sin{m_a t}\right)t} 
 \simeq B_T\bigg(\cos{\omega_{He}t} - gv\sqrt{\rho_{DM}}t\cos{(\omega_{He} \pm m_a)t}\bigg)
 \end{align}
 
-Thus, the signal arises as a single frequency peak of amplitude $B_T$ at $\omega_{He}$, as expected from the normal magnetization signal, as well as two sidebands with amplitude $B_Tgv\sqrt{\rho_{DM}}t$ at frequencies $\omega_{He} \pm m_a$. Thus, as long as these sidebands can be sufficiently resolved, the dark matter signal can be measured in this channel. The requirement for these sidebands to be sufficiently resolved is 
+Thus, the signal arises as a single frequency peak of amplitude $B_T$ at $\omega_{He}$, as expected from the normal magnetization signal, as well as two sidebands with amplitude $B_Tgv\sqrt{\rho_{DM}}t$ at frequencies $\omega_{He} \pm m_a$. Thus, as long as these sidebands can be sufficiently resolved, the dark matter signal can be measured in this channel. The requirement for these sidebands to be sufficiently resolved is that the bandwidth of the measured signal is less than half that of the 
 \tjw{FINISH}
 
 The analysis for a dark matter signal will be similar to that above, as the weighted frequency difference will now be oscillating at the dark matter frequency (actually it will be oscillating at the frequencies $\Omega_{\bigoplus} \pm m_a$). 
 
 The systematic errors for this experiment are never explicitly mentioned, but we assume they are of a similar type to those in the previous experiment. As a result, they can be subtracted out using the same kind of analysis. The results for these analyses are shown in Figure \tjw{whatever}
+
+
+
 \begingroup
 \renewcommand{\section}[2]{}%
 % \renewcommand{\chapter}[2]{}% for other classes

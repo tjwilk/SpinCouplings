@@ -286,25 +286,20 @@ With perfect compensation, this weighted frequency should cancel all stray magne
 
 Due to the long relaxation times of both He and Xe, the magnetometer is able to run for a single shot time of $24$h, with sampling times of $3.2$s to make frequency measurements. This allows for two possibilities for analysis to search for dark matter: searching for frequency variation between the various samples and searching for frequency variation within the sample.
 
-Searching for variation between the two samples is more favorable at the lowest dark matter frequencies, as there is time for the dark matter signal to evolve. When searching for Lorentz violation, the frequency is measured ever $3.2$ seconds and 
+Searching for variation across the samples is more favorable at the lowest dark matter frequencies, as there is time for the dark matter signal to evolve. As described above, the standard search for Lorentz violation is measurement of these weighted frequency differences and looking for sidereal variation. However, in the presence of the axion, there will now be three distinct frequency variations at $\Omega_{\bigoplus}$ and $\Omega_{\bigoplus} \pm m_a$. The size of the signal will vary as \tjw{FINISH}
 
- Thus, for axion wavelengths longer than $3.2$s, the dark matter is best found by analyzing the difference between $\Delta \omega$ at different samples and looking for oscillation at sidebands set by the the dark matter frequency at $\Omega_{\bigoplus} \pm m_a$. The results from this analysis are shown by the red curve in Figure \ref{fig:mag_sensitivity}. One particular disadvantage to this technique is due to the $\frac{1}{f}$ frequency noise from the SQUID. At very low dark matter frequencies, the sideband frequencies are very small and thus 
+The results from this analysis are shown by the red curve in Figure \ref{fig:mag_sensitivity}. One particular disadvantage to this technique is due to the $\frac{1}{f}$ frequency noise from the SQUID that kicks in at $\mathcal{O}(1 \, \rm{Hz})$. At very low dark matter frequencies, the sideband frequencies are below this threshold, and thus the noise background is going to be much larger than the standard noise floor of the magnetometer. However, this can be overcome by rotating the apparatus at a set frequency much larger than the earth's rotation frequency such that the sidebands are located at a higher frequency.
 
-
-
-
-
-
-
-For axion wavelengths shorter $3.2$s, the signal will arise in the individual $3.2$s samples. The total magnetization signal from the SQUID will now take the form
+The other analysis strategy is to search for variation of the frequency within the sample. For this analysis, we have to re-analyze the the actual SQUID output measurement. Typically, the SQUID will measure an oscillating magnetization due to the precession of the atoms as $B(t) = B_T\cos{(\omega_{He}t)}s$. However, the precession frequency will now itself be oscillating to the presence of the axionic dark matter, so the total magnetization signal from the SQUID will now take the form
 
 \begin{align}
-B(t) = B_T\cos{\left(\omega_{He} + g_{aNN}v\sqrt{\rho_{DM}}\sin{m_a t}\right)t} \\
-\simeq B_T\bigg(\cos{\omega_{He}t} - gv\sqrt{\rho_{DM}}t\cos{(\omega_{He} \pm m_a)t}\bigg)
+B(t) = B_T\cos{\big(\left(\omega_{He} + g_{aNN}v\sqrt{\rho_{DM}}\sin{(m_a t)}\right)t\big)} \\
+\simeq B_T\bigg(\cos{(\omega_{He}t)} - gv\sqrt{\rho_{DM}}t\cos{\big((\omega_{He} \pm m_a)\big)}\bigg)
 \end{align}
 
-Thus, the signal arises as a single frequency peak of amplitude $B_T$ at $\omega_{He}$, as expected from the normal magnetization signal, as well as two sidebands with amplitude $B_Tgv\sqrt{\rho_{DM}}t$ at frequencies $\omega_{He} \pm m_a$. Thus, as long as these sidebands can be sufficiently resolved, the dark matter signal can be measured in this channel. The requirement for these sidebands to be sufficiently resolved is that the bandwidth of the measured signal is less than half that of the 
-\tjw{FINISH}
+Thus, the signal arises as a single frequency peak of amplitude $B_T$ at $\omega_{He}$, as expected from the normal magnetization signal, as well as two sidebands with amplitude $B_Tgv\sqrt{\rho_{DM}}t$ at frequencies $\omega_{He} \pm m_a$. Thus, as long as these sidebands can be sufficiently resolved, the dark matter signal can be measured in this channel. 
+
+The requirement for these sidebands to be sufficiently resolved is that the bandwidth of the sidebands is less than half that of the bandwidth of the the primary frequency peak. The single frequency peak has a Fourier-limited width of $\frac{\pi}{T}$, where $T = 3.2$s is the total time the frequency has been measured. The sidebands, likewise, will have widths of $\min(\frac{m}{Q}, T)$, depending on the exact frequency. This resolution cuts out a large-portion of the low mass end of the spectrum. However, this can be overcome by increasing the sampling time of the measurement to allow for a reduced Fourier-limited bandwidth. 
 
 The analysis for a dark matter signal will be similar to that above, as the weighted frequency difference will now be oscillating at the dark matter frequency (actually it will be oscillating at the frequencies $\Omega_{\bigoplus} \pm m_a$). 
 
